@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-1L >> 0
+//1L >> 0
 
 typedef struct s_data {
     void *mlx;
