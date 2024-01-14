@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jedurand <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:36:50 by jedurand          #+#    #+#             */
-/*   Updated: 2023/10/12 16:19:46 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/01/12 16:13:11 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
+# include "../libft/libft.h"
 # include <limits.h>
 # include <stdlib.h>
 # include <sys/types.h>
@@ -23,19 +24,18 @@
 #  define BUFFER_SIZE 10
 # endif
 
-typedef struct s_list
+typedef struct s_glist
 {
 	char			*content;
-	struct s_list	*next;
-}				t_list;
+	struct s_glist	*next;
+}				t_glist;
 
 char	*get_next_line(int fd);
-int		found_newline(t_list *stash);
-t_list	*ft_lst_get_last(t_list *stash);
-void	read_and_stash(int fd, t_list **stash);
-void	extract_line(t_list *stash, char **line);
-void	generate_line(char **line, t_list *stash);
-void	clean_stash(t_list **stash);
-int		ft_strlen(const char *str);
-void	free_stash(t_list *stash);
+int		found_newline(t_glist *stash);
+t_glist	*ft_lst_get_last(t_glist *stash);
+void	read_and_stash(int fd, t_glist **stash);
+void	extract_line(t_glist *stash, char **line);
+void	generate_line(char **line, t_glist *stash);
+void	clean_stash(t_glist **stash);
+void	free_stash(t_glist *stash);
 #endif

@@ -1,28 +1,43 @@
-NAME = test
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror
-MLX = ./minilibx-linux
-SRC_DIR = ./src
-OBJ_DIR = ./obj
-INC_DIR = ./include
+NAME = fdf
 
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+CC = gcc
+
+CFLAGS = -Werror -Wall -Wextra -fsanitize=address
+
+RM = rm -rf
+
+# Add your FdF source files here
+SRCS =	src/fdf.c \
+		src/other_sources.c \
+		src/more_sources.c \
+		libft/libft.a \
+		gnl/libgnl.a
+
+LIBFT = libft/libft.a
+LIBGNL = gnl/libgnl.a
+
+# Include MiniLibX flags if necessary
+MLX_FLAGS = -L /path/to/minilibx -lmlx -framework OpenGL -framework AppKit
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) -L$(MLX) -lmlx -lXext -lX11 -lm -lbsd
+$(NAME): $(LIBFT) $(LIBGNL)
+	$(CC) $(CFLAGS) $(SRCS) $(MLX_FLAGS) -o $(NAME)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -I$(MLX) -c $< -o $@
+$(LIBFT):
+	make -C libft
+
+$(LIBGNL):
+	make -C gnl
 
 clean:
-	rm -rf $(OBJ_DIR)
+	$(RM) $(NAME)
+	make clean -C libft
+	make clean -C gnl
 
 fclean: clean
-	rm -f $(NAME)
+	make fclean -C libft
+	make fclean -C gnl
 
 re: fclean all
 

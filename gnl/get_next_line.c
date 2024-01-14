@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jedurand <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:35:46 by jedurand          #+#    #+#             */
-/*   Updated: 2023/10/12 16:45:15 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/01/12 15:50:49 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
  * anymore. This function clears the stash so only the characters that have
  * not been returned at the end of get_next_line remain in our static stash. */
 
-void	clean_stash(t_list **stash)
+void	clean_stash(t_glist **stash)
 {
-	t_list	*last;
-	t_list	*clean_node;
+	t_glist	*last;
+	t_glist	*clean_node;
 	int		i;
 	int		j;
 
-	clean_node = malloc(sizeof(t_list));
+	clean_node = malloc(sizeof(t_glist));
 	if (stash == NULL || clean_node == NULL)
 		return ;
 	clean_node->next = NULL;
@@ -48,7 +48,7 @@ void	clean_stash(t_list **stash)
 /* Extracts all characters from our stash and stores them in out line.
  * stopping after the first \n it encounters */
 
-void	extract_line(t_list *stash, char **line)
+void	extract_line(t_glist *stash, char **line)
 {
 	int	i;
 	int	j;
@@ -78,13 +78,13 @@ void	extract_line(t_list *stash, char **line)
 
 /* Adds the content of our buffer to the end of our stash */
 
-static void	add_to_stash(t_list **stash, char *buff, int readed)
+static void	add_to_stash(t_glist **stash, char *buff, int readed)
 {
 	int		i;
-	t_list	*last;
-	t_list	*new_node;
+	t_glist	*last;
+	t_glist	*new_node;
 
-	new_node = malloc(sizeof(t_list));
+	new_node = malloc(sizeof(t_glist));
 	if (new_node == NULL)
 		return ;
 	new_node->next = NULL;
@@ -109,7 +109,7 @@ static void	add_to_stash(t_list **stash, char *buff, int readed)
 
 /* Uses read() to add characters to the stash */
 
-void	read_and_stash(int fd, t_list **stash)
+void	read_and_stash(int fd, t_glist **stash)
 {
 	char	*buff;
 	int		readed;
@@ -134,11 +134,11 @@ void	read_and_stash(int fd, t_list **stash)
 
 char	*get_next_line(int fd)
 {
-	static t_list	*stash = NULL;
+	static t_glist	*stash;
 	char			*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
-		return (NULL);
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) == -1)
+		return (free(stash), stash = NULL, NULL);
 	line = NULL;
 	read_and_stash(fd, &stash);
 	if (stash == NULL)

@@ -1,6 +1,7 @@
 #ifndef FDF_H
 # define FDF_H
 
+# include "libft.h"
 # include "get_next_line.h"
 # include "mlx.h"
 # include <X11/keysym.h>
