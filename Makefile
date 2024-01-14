@@ -8,16 +8,13 @@ RM = rm -rf
 
 # Add your FdF source files here
 SRCS =	src/fdf.c \
-		src/other_sources.c \
-		src/more_sources.c \
 		libft/libft.a \
 		gnl/libgnl.a
 
 LIBFT = libft/libft.a
 LIBGNL = gnl/libgnl.a
 
-# Include MiniLibX flags if necessary
-MLX_FLAGS = -L /path/to/minilibx -lmlx -framework OpenGL -framework AppKit
+MLX_FLAGS = -L minilibx-linux -lmlx -lXext -lX11
 
 all: $(NAME)
 
