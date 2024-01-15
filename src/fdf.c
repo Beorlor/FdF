@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     // Initialize MiniLibX
     mlx = init_mlx(800, 600, "FdF");
     if (!mlx)
-        return (1);
+        return (EXIT_FAILURE);
 
     // Add your rendering code here
 
