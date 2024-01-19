@@ -9,7 +9,6 @@ void free_point_list(t_point_list **list) {
     }
 }
 
-// TODO TODO TODO
 bool    parse_file(char *filename, t_point_list **list)
 {
     int     fd;
