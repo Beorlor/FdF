@@ -1,5 +1,14 @@
 #include "../../include/fdf.h"
 
+void free_point_list(t_point_list **list) {
+    t_point_list *temp;
+    while (*list) {
+        temp = (*list)->next;
+        free(*list);
+        *list = temp;
+    }
+}
+
 // TODO TODO TODO
 bool    parse_file(char *filename, t_point_list **list)
 {
@@ -12,16 +21,19 @@ bool    parse_file(char *filename, t_point_list **list)
 
     fd = open(filename, O_RDONLY);
     if (fd < 0)
-        return (false);
+	{
+		ft_putendl_fd("File not found", 2);
+		return (false);
+	}
     while ((line = get_next_line(fd)) != NULL)
     {
 		if (!is_line_valid(line))
 		{
-        ft_putendl_fd("Invalid line format in file.", 2);
-        free(line);
-		//TODO TODO TODO (free partial created list)
-        close(fd);
-        return (false);
+        	ft_putendl_fd("Invalid line format in file.", 2);
+        	free(line);
+			free_point_list(list);
+        	close(fd);
+        	return (false);
     	}
         tokens = ft_split(line, ' ');
         x = 0;
