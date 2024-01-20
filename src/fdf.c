@@ -1,36 +1,57 @@
 #include "../include/fdf.h"
 
-int main(int argc, char **argv)
-{
-    t_mlx   *mlx;
-    t_point_list  *point_list;
+int main(int argc, char **argv) {
+    t_mlx *mlx;
+    t_img *img;
+	t_map map;
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         ft_putendl_fd("Usage: ./fdf filename", 2);
-        return (1);
+        return (EXIT_FAILURE);
     }
 
-    point_list = NULL;
-    if (!parse_file(argv[1], &point_list))
-	{
-		return (EXIT_FAILURE);
-	}
-
-	print_point_list(point_list);
-    // Initialize MiniLibX
-    mlx = init_mlx(800, 600, "FdF");
-    if (!mlx)
+    if (!parse_file(argv[1], &map)) {
         return (EXIT_FAILURE);
+    }
 
-    // Add your rendering code here
+	print_point_list(map.points);
+
+    // Initialize MiniLibX
+    mlx = init_mlx(1280, 720, "FdF");
+    if (!mlx) {
+        // Free the point list before exiting
+        free_point_list(&map.points);
+        return (EXIT_FAILURE);
+    }
+
+    // Initialize the image
+    img = init_img(mlx, 1280, 720);
+    if (!img) {
+        free(mlx);
+        free_point_list(&map.points);
+        return (EXIT_FAILURE);
+    }
+
+	// Example values for scale and translation
+	float scale = 30.0;
+	t_point translate = {100, 100, 0};
+	int height_threshold = 0;
+
+	// Render the grid
+	render_grid(&map, img, scale, translate, height_threshold);
+
+    // Render the image to the window
+    render(mlx, img);
 
     // Start the MiniLibX loop
     mlx_loop(mlx->mlx_ptr);
 
     // Clean up
+    free_point_list(&map.points);
+    mlx_destroy_image(mlx->mlx_ptr, img->img_ptr);
+    free(img);
     free(mlx);
-    // Don't forget to free the linked list
+
     return (EXIT_SUCCESS);
 }
 
@@ -41,25 +62,3 @@ void print_point_list(t_point_list *list) {
     }
 }
 
-t_mlx   *init_mlx(int width, int height, char *title)
-{
-    t_mlx *mlx;
-
-    mlx = (t_mlx *)malloc(sizeof(t_mlx));
-    if (!mlx)
-        return (NULL);
-    mlx->mlx_ptr = mlx_init();
-    if (!mlx->mlx_ptr)
-    {
-        free(mlx);
-        return (NULL);
-    }
-    mlx->win_ptr = mlx_new_window(mlx->mlx_ptr, width, height, title);
-    if (!mlx->win_ptr)
-    {
-        free(mlx->mlx_ptr);
-        free(mlx);
-        return (NULL);
-    }
-    return (mlx);
-}

@@ -9,46 +9,50 @@ void free_point_list(t_point_list **list) {
     }
 }
 
-bool    parse_file(char *filename, t_point_list **list)
-{
-    int     fd;
-    char    *line;
-    char    **tokens;
-    int     y = 0;
-    int     x;
-    int     z;
+bool parse_file(char *filename, t_map *map) {
+    int fd;
+    char *line;
+    char **tokens;
+    int y = 0;
+    int x;
 
     fd = open(filename, O_RDONLY);
-    if (fd < 0)
-	{
-		ft_putendl_fd("File not found", 2);
-		return (false);
-	}
-    while ((line = get_next_line(fd)) != NULL)
-    {
-		if (!is_line_valid(line))
-		{
-        	ft_putendl_fd("Invalid line format in file.", 2);
-        	free(line);
-			free_point_list(list);
-        	close(fd);
-        	return (false);
-    	}
+    if (fd < 0) {
+        ft_putendl_fd("File not found", 2);
+        return (false);
+    }
+
+    map->num_rows = 0;
+    map->num_cols = -1; // Will be updated with the number of columns on the first line
+
+    while ((line = get_next_line(fd)) != NULL) {
+        if (!is_line_valid(line)) {
+            ft_putendl_fd("Invalid line format in file.", 2);
+            free(line);
+            free_point_list(&map->points); // Assume this frees the entire list
+            close(fd);
+            return (false);
+        }
+
         tokens = ft_split(line, ' ');
         x = 0;
-        while (tokens[x] != NULL)
-        {
-            z = ft_atoi(tokens[x]);  // Convert the string to an int for the z value
-            add_point_to_list(list, x, y, z);
-            free(tokens[x]);     // Free each token after use
+        while (tokens[x] != NULL) {
+            add_point_to_list(&map->points, x, y, ft_atoi(tokens[x]));
+            free(tokens[x]);
             x++;
         }
-        free(tokens);           // Free the array of tokens
-        free(line);             // Free the line from get_next_line
+
+        if (map->num_cols == -1)
+            map->num_cols = x;
+
+        free(tokens);
+        free(line);
         y++;
     }
+
+    map->num_rows = y;
     close(fd);
-	return (true);
+    return (true);
 }
 
 void    add_point_to_list(t_point_list **list, int x, int y, int z)
@@ -98,7 +102,7 @@ bool is_line_valid(const char *line) {
 }
 
 // Function to check if a string is a valid integer, considering newline characters
-bool is_valid_integer(const char *str) {
+bool is_valid_integer (const char *str) {
     if (*str == '-' || *str == '+')  // Handle negative and positive signs
         str++;
     if (*str == '\0')  // String is only a sign

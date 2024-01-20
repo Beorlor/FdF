@@ -9,7 +9,9 @@ SRC_DIR = src/
 
 # Add your FdF source files here
 SRCS = fdf.c \
-       parsing/parsing.c
+       parsing/parsing.c \
+       minilibx_management/image.c \
+       drawing/basic_projection.c
 
 # Create object file paths in the obj directory
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
@@ -29,6 +31,14 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR)%.o: $(SRC_DIR)parsing/%.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)%.o: $(SRC_DIR)minilibx_management/%.c
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)%.o: $(SRC_DIR)drawing/%.c
 	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
