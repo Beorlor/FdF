@@ -19,7 +19,7 @@ OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 LIBFT = libft/libft.a
 LIBGNL = gnl/libgnl.a
 
-MLX_FLAGS = -L minilibx-linux -lmlx -lXext -lX11
+MLX_FLAGS = -L minilibx-linux -lmlx -lXext -lX11 -lm
 
 all: $(NAME)
 

@@ -20,13 +20,13 @@ void render_grid(t_map *map, t_img *img, float scale, t_point translate) {
             if (x < map->num_cols - 1) {
                 t_point right = get_point_at(map, x + 1, y);
                 t_point projected_right = orthogonal_project_point(right, scale, translate);
-                draw_line(img, projected_current, projected_right);
+                bresenham_draw_line(img, projected_current, projected_right);
             }
 
             if (y < map->num_rows - 1) {
                 t_point bottom = get_point_at(map, x, y + 1);
                 t_point projected_bottom = orthogonal_project_point(bottom, scale, translate);
-                draw_line(img, projected_current, projected_bottom);
+                bresenham_draw_line(img, projected_current, projected_bottom);
             }
         }
     }
@@ -52,26 +52,38 @@ int max(int a, int b) {
     return (a > b) ? a : b;
 }
 
-void draw_line(t_img *img, t_point p0, t_point p1) {
-    int dx = max(p0.x, p1.x) - min(p0.x, p1.x);
-    int dy = max(p0.y, p1.y) - min(p0.y, p1.y);
-    int steps = max(dx, dy);
-    float heightIncrement = (float)(p1.z - p0.z) / steps;
+void bresenham_draw_line(t_img *img, t_point p0, t_point p1) {
+    int dx = abs(p1.x - p0.x), sx = p0.x < p1.x ? 1 : -1;
+    int dy = -abs(p1.y - p0.y), sy = p0.y < p1.y ? 1 : -1;
+    int err = dx + dy, e2;
+
+    float totalDistance = sqrt(dx * dx + dy * dy); // Calculate total distance
+    float heightDiff = p1.z - p0.z;
+    float heightStep = heightDiff / totalDistance; // Adjust height step for total distance
     float currentHeight = p0.z;
     int color;
 
-    for (int i = 0; i <= steps; i++) {
-        int x = p0.x + (dx ? (i * (p1.x - p0.x) / steps) : 0);
-        int y = p0.y + (dy ? (i * (p1.y - p0.y) / steps) : 0);
-        currentHeight += heightIncrement;
-
-        // Use predefined color if set, otherwise calculate based on height
-        if (p0.color == 0 || p0.color == -1 || p0.color > 16777215) {
-            color = determine_color((int)currentHeight);
-        } else {
+    while (true) {
+        // Determine color
+        if (p0.color != -1) {
             color = p0.color;
+        } else {
+            color = determine_color((int)currentHeight);
         }
-        put_pixel_to_img(img, x, y, color);
+        put_pixel_to_img(img, p0.x, p0.y, color);
+
+        if (p0.x == p1.x && p0.y == p1.y) break;
+        e2 = 2 * err;
+        if (e2 >= dy) {
+            err += dy;
+            p0.x += sx;
+            currentHeight += heightStep; // Increment height on x-axis movement
+        }
+        if (e2 <= dx) {
+            err += dx;
+            p0.y += sy;
+            currentHeight += heightStep; // Increment height on y-axis movement
+        }
     }
 }
 

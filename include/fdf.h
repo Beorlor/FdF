@@ -11,6 +11,7 @@
 # include <stdio.h>
 # include <stdint.h>
 # include <stdbool.h>
+# include <math.h>
 
 typedef struct s_mlx {
     void    *mlx_ptr;
@@ -67,7 +68,7 @@ void render(t_mlx *mlx, t_img *img);
 t_point orthogonal_project_point(t_point point3D, float scale, t_point translate);
 void render_grid(t_map *map, t_img *img, float scale, t_point translate);
 t_point get_point_at(t_map *map, int x, int y);
-void draw_line(t_img *img, t_point p0, t_point p1);
+void bresenham_draw_line(t_img *img, t_point p0, t_point p1);
 int determine_color(int height);
 
 #endif
