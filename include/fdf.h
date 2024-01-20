@@ -25,11 +25,13 @@ typedef struct s_img {
     int     endian;
 }               t_img;
 
-typedef struct  s_point {
-    int     x;
-    int     y;
-    int     z;
-}               t_point;
+typedef struct s_point {
+    int x;
+    int y;
+    int z;
+    int color; // Color information
+} t_point;
+
 
 typedef struct  s_point_list {
     t_point         point;
@@ -49,8 +51,10 @@ void print_point_list(t_point_list *list);
 // parsing
 void free_point_list(t_point_list **list);
 bool parse_file(char *filename, t_map *map);
-void    add_point_to_list(t_point_list **list, int x, int y, int z);
+void add_point_to_list(t_point_list **list, int x, int y, int z, int color);
 bool is_line_valid(const char *line);
+bool is_valid_hex_color(const char *str);
+int ft_isxdigit(int c);
 bool is_valid_integer(const char *str);
 
 // image
@@ -61,8 +65,9 @@ void render(t_mlx *mlx, t_img *img);
 
 // basic_projection
 t_point orthogonal_project_point(t_point point3D, float scale, t_point translate);
-void render_grid(t_map *map, t_img *img, float scale, t_point translate, int height_threshold);
+void render_grid(t_map *map, t_img *img, float scale, t_point translate);
 t_point get_point_at(t_map *map, int x, int y);
-void draw_line(t_img *img, t_point p0, t_point p1, int color);
+void draw_line(t_img *img, t_point p0, t_point p1);
+int determine_color(float height);
 
 #endif

@@ -34,11 +34,10 @@ int main(int argc, char **argv) {
 
 	// Example values for scale and translation
 	float scale = 30.0;
-	t_point translate = {100, 100, 0};
-	int height_threshold = 0;
+	t_point translate = {100, 100, 0, 0};
 
 	// Render the grid
-	render_grid(&map, img, scale, translate, height_threshold);
+	render_grid(&map, img, scale, translate);
 
     // Render the image to the window
     render(mlx, img);
@@ -57,7 +56,7 @@ int main(int argc, char **argv) {
 
 void print_point_list(t_point_list *list) {
     while (list != NULL) {
-        printf("Point (x: %d, y: %d, z: %d)\n", list->point.x, list->point.y, list->point.z);
+        printf("Point (x: %d, y: %d, z: %d, color: %d)\n", list->point.x, list->point.y, list->point.z, list->point.color);
         list = list->next;
     }
 }
