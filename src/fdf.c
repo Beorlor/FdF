@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
         return (EXIT_FAILURE);
     }
 
-	print_point_list(map.points);
+	//print_point_list(map.points);
 
     // Initialize MiniLibX
     mlx = init_mlx(1280, 720, "FdF");

@@ -95,7 +95,19 @@ void add_point_to_list(t_point_list **list, int x, int y, int z, int color)
 }
 
 bool is_line_valid(const char *line) {
-    char **tokens = ft_split(line, ' ');
+    // Copy line to a mutable string
+    char *mutableLine = ft_strdup(line);
+    if (!mutableLine) return false;
+
+    // Remove newline character if present
+    size_t len = ft_strlen(mutableLine);
+    if (len > 0 && mutableLine[len - 1] == '\n') {
+        mutableLine[len - 1] = '\0';
+    }
+
+    char **tokens = ft_split(mutableLine, ' ');
+    free(mutableLine); // Free the copy after splitting
+
     if (tokens == NULL) return false;
 
     bool valid = true;
@@ -123,6 +135,7 @@ bool is_line_valid(const char *line) {
 
     return valid;
 }
+
 
 bool is_valid_hex_color(const char *str) {
     // Check if the string starts with "0x" or "0X"

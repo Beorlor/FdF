@@ -6,6 +6,7 @@ t_point orthogonal_project_point(t_point point3D, float scale, t_point translate
     point2D.x = point3D.x * scale + translate.x;
     point2D.y = point3D.y * scale + translate.y;
 	point2D.z = point3D.z;
+	point2D.color = point3D.color;
 
     return point2D;
 }
@@ -65,7 +66,7 @@ void draw_line(t_img *img, t_point p0, t_point p1) {
         currentHeight += heightIncrement;
 
         // Use predefined color if set, otherwise calculate based on height
-        if (p0.color == 0 || p0.color == -1 || p0.color > 0xFFFFFF) {
+        if (p0.color == 0 || p0.color == -1 || p0.color > 16777215) {
             color = determine_color((int)currentHeight);
         } else {
             color = p0.color;
@@ -74,14 +75,23 @@ void draw_line(t_img *img, t_point p0, t_point p1) {
     }
 }
 
-int determine_color(float height) {
+int determine_color(int height) {
     // Example: Simple color calculation based on height
     // Modify this logic as per your requirement
 	if (height < 0)
 		height *= -1;
-	if (height > 0)
-		printf("height = %f\n", height);
-    if (height >= 10) return 0xFF0000; // Red for high
-    if (height >= 5) return 0x00FF00;  // Green for medium
-    return 0x0000FF;                 // Blue for low
+    int normalizedHeight = height % 11;
+    switch (normalizedHeight) {
+        case 1: return 0x0000FF; // Blue
+        case 2: return 0x1E90FF; // Dodger Blue
+        case 3: return 0x00FFFF; // Cyan
+        case 4: return 0x00FA9A; // Medium Spring Green
+        case 5: return 0x32CD32; // Lime Green
+        case 6: return 0xFFFF00; // Yellow
+        case 7: return 0xFFD700; // Gold
+        case 8: return 0xFFA500; // Orange
+        case 9: return 0xFF4500; // Orange Red
+        case 10: return 0xFF0000; // Red
+        default: return 0xFFFFFF; // Default to blue for any unexpected value
+    }
 }
