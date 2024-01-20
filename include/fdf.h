@@ -13,19 +13,6 @@
 # include <stdbool.h>
 # include <math.h>
 
-typedef struct s_mlx {
-    void    *mlx_ptr;
-    void    *win_ptr;
-}               t_mlx;
-
-typedef struct s_img {
-    void    *img_ptr;
-    char    *addr;
-    int     bpp;
-    int     line_length;
-    int     endian;
-}               t_img;
-
 typedef struct s_point {
     int x;
     int y;
@@ -45,9 +32,31 @@ typedef struct s_map {
     int num_cols;
 } t_map;
 
+typedef struct s_mlx {
+    void    *mlx_ptr;
+    void    *win_ptr;
+}               t_mlx;
+
+typedef struct s_img {
+    void    *img_ptr;
+    char    *addr;
+    int     bpp;
+    int     line_length;
+    int     endian;
+}               t_img;
+
+typedef struct s_fdf {
+    t_map *map;
+    t_mlx *mlx;
+    t_img *img;
+    float scale;
+    t_point translate;
+} t_fdf;
 
 // fdf
 void print_point_list(t_point_list *list);
+int handle_key(int keycode, t_fdf *fdf);
+void exit_cleanup(t_fdf *fdf);
 
 // parsing
 void free_point_list(t_point_list **list);

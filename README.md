@@ -2,4 +2,9 @@
 
 gcc test.c -o test -L../minilibx-linux -lmlx -lXext -lX11 -I../minilibx-linux
 
-TODO (free partial created list) in parse_file in parsing.c
+TODO :
+make sure the content doesnt wrap
+
+translate, scale, rotation de base, selon le nombre de ligne/collone
+
+vue isometric
