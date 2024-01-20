@@ -13,6 +13,9 @@
 # include <stdbool.h>
 # include <math.h>
 
+# define WINDOW_WIDTH 1280
+# define WINDOW_HEIGHT 720
+
 typedef struct s_point {
     int x;
     int y;

@@ -41,10 +41,11 @@ t_img *init_img(t_mlx *mlx, int width, int height) {
 }
 
 void put_pixel_to_img(t_img *img, int x, int y, int color) {
-    char *dst;
-
-    dst = img->addr + (y * img->line_length + x * (img->bpp / 8));
-    *(unsigned int *)dst = color;
+    // Check if the pixel is within the window bounds
+    if (x >= 0 && x < WINDOW_WIDTH && y >= 0 && y < WINDOW_HEIGHT) {
+        char *dst = img->addr + (y * img->line_length + x * (img->bpp / 8));
+        *(unsigned int*)dst = color;
+    }
 }
 
 void render(t_mlx *mlx, t_img *img) {
