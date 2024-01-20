@@ -58,6 +58,7 @@ typedef struct s_fdf {
 
 // fdf
 void print_point_list(t_point_list *list);
+int calculate_initial_scale(int num_cols, int num_rows);
 int handle_key(int keycode, t_fdf *fdf);
 void exit_cleanup(t_fdf *fdf);
 

@@ -32,8 +32,8 @@ int main(int argc, char **argv) {
         return (EXIT_FAILURE);
     }
 
-	// Example values for scale and translation
-	t_fdf fdf = {&map, mlx, img, 30.0, {100, 100, 0, 0}};
+	int initial_scale = calculate_initial_scale(map.num_cols, map.num_rows);
+	t_fdf fdf = {&map, mlx, img, initial_scale, {100, 100, 0, 0}};
 
 	// Render the grid
 	render_grid(&map, img, fdf.scale, fdf.translate);
@@ -60,6 +60,20 @@ void print_point_list(t_point_list *list) {
         printf("Point (x: %d, y: %d, z: %d, color: %d)\n", list->point.x, list->point.y, list->point.z, list->point.color);
         list = list->next;
     }
+}
+
+int calculate_initial_scale(int num_cols, int num_rows) {
+    const int max_cols_for_default_scale = 25;
+    const int max_rows_for_default_scale = 20;
+    const int default_scale = 30;
+
+    int scale_factor_col = (num_cols > max_cols_for_default_scale) ? (max_cols_for_default_scale * 100) / num_cols : 100;
+    int scale_factor_row = (num_rows > max_rows_for_default_scale) ? (max_rows_for_default_scale * 100) / num_rows : 100;
+
+    // Choose the smaller scale factor to ensure the entire map fits within the window
+    int scale_factor = (scale_factor_col < scale_factor_row) ? scale_factor_col : scale_factor_row;
+
+    return (default_scale * scale_factor) / 100;
 }
 
 // Key handling function
