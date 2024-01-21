@@ -59,6 +59,7 @@ typedef struct s_fdf {
     float scale;
     t_point translate;
 	t_point rotation;
+	bool is_isometric;
 } t_fdf;
 
 // fdf

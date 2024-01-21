@@ -33,10 +33,9 @@ int main(int argc, char **argv) {
     }
 
 	int initial_scale = calculate_initial_scale(map.num_cols, map.num_rows);
-	t_fdf fdf = {&map, mlx, img, initial_scale, {500, 150, 0, 0}, {0, 0, 0, 0}};
+	t_fdf fdf = {&map, mlx, img, initial_scale, {0, 0, 0, 0}, {0, 0, 0, 0}, true};
 
 	// Render the grid
-	// render_grid(&map, img, fdf.scale, fdf.translate);
 	render_iso(&map, img, fdf.scale, fdf.translate, fdf.rotation);
 
     // Render the image to the window
@@ -78,7 +77,6 @@ int calculate_initial_scale(int num_cols, int num_rows) {
 }
 
 // Key handling function
-
 int handle_key(int keycode, t_fdf *fdf) {
     const int KEY_W = 119; // Move up
     const int KEY_A = 97;  // Move left
@@ -87,6 +85,13 @@ int handle_key(int keycode, t_fdf *fdf) {
     const int KEY_Q = 113; // Scale down
     const int KEY_E = 101; // Scale up
     const int KEY_ESC = 65307; // Exit
+	const int KEY_O = 111;  // Toggle Projection Mode
+	const int KEY_Y = 121;  // Rotate +X
+	const int KEY_H = 104;  // Rotate -X
+	const int KEY_U = 117;  // Rotate +Y
+	const int KEY_J = 106;  // Rotate -Y
+	const int KEY_I = 105;  // Rotate +Z
+	const int KEY_K = 107;  // Rotate -Z
 
     if (keycode == KEY_W) {
         fdf->translate.y -= 10;
@@ -104,17 +109,39 @@ int handle_key(int keycode, t_fdf *fdf) {
         exit_cleanup(fdf);
     }
 
+    // Projection Mode Toggle
+    if (keycode == KEY_O) {
+        fdf->is_isometric = !fdf->is_isometric; // Toggle projection mode
+    }
+
+    // Rotation Handling
+    if (keycode == KEY_Y) fdf->rotation.x += 5;
+    if (keycode == KEY_H) fdf->rotation.x -= 5;
+    if (keycode == KEY_U) fdf->rotation.y += 5;
+    if (keycode == KEY_J) fdf->rotation.y -= 5;
+    if (keycode == KEY_I) fdf->rotation.z += 5;
+    if (keycode == KEY_K) fdf->rotation.z -= 5;
+
+    // Redraw the image
     if (fdf->img != NULL) {
         mlx_destroy_image(fdf->mlx->mlx_ptr, fdf->img->img_ptr);
         free(fdf->img);
     }
 
     fdf->img = init_img(fdf->mlx, 1280, 720);
-    render_iso(fdf->map, fdf->img, fdf->scale, fdf->translate, fdf->rotation);
+
+    // Render based on current projection mode
+    if (fdf->is_isometric) {
+        render_iso(fdf->map, fdf->img, fdf->scale, fdf->translate, fdf->rotation);
+    } else {
+        render_grid(fdf->map, fdf->img, fdf->scale, fdf->translate); // Orthogonal projection
+    }
+
     render(fdf->mlx, fdf->img);
 
     return 0;
 }
+
 
 void exit_cleanup(t_fdf *fdf) {
     if (fdf->map != NULL) {
