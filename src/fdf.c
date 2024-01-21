@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
     }
 
 	int initial_scale = calculate_initial_scale(map.num_cols, map.num_rows);
-	t_fdf fdf = {&map, mlx, img, initial_scale, {0, 0, 0, 0}, {0, 0, 0, 0}, true};
+	t_fdf fdf = {&map, mlx, img, initial_scale, {500, 150, 0, 0}, {0, 0, 0, 0}, true};
 
 	// Render the grid
 	render_iso(&map, img, fdf.scale, fdf.translate, fdf.rotation);
@@ -115,12 +115,12 @@ int handle_key(int keycode, t_fdf *fdf) {
     }
 
     // Rotation Handling
-    if (keycode == KEY_Y) fdf->rotation.x += 5;
-    if (keycode == KEY_H) fdf->rotation.x -= 5;
-    if (keycode == KEY_U) fdf->rotation.y += 5;
-    if (keycode == KEY_J) fdf->rotation.y -= 5;
-    if (keycode == KEY_I) fdf->rotation.z += 5;
-    if (keycode == KEY_K) fdf->rotation.z -= 5;
+    if (keycode == KEY_Y) fdf->rotation.x += 90;
+    if (keycode == KEY_H) fdf->rotation.x -= 90;
+    if (keycode == KEY_U) fdf->rotation.y += 90;
+    if (keycode == KEY_J) fdf->rotation.y -= 90;
+    if (keycode == KEY_I) fdf->rotation.z += 90;
+    if (keycode == KEY_K) fdf->rotation.z -= 90;
 
     // Redraw the image
     if (fdf->img != NULL) {
