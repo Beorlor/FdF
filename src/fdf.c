@@ -33,10 +33,11 @@ int main(int argc, char **argv) {
     }
 
 	int initial_scale = calculate_initial_scale(map.num_cols, map.num_rows);
-	t_fdf fdf = {&map, mlx, img, initial_scale, {100, 100, 0, 0}};
+	t_fdf fdf = {&map, mlx, img, initial_scale, {500, 150, 0, 0}, {0, 0, 0, 0}};
 
 	// Render the grid
-	render_grid(&map, img, fdf.scale, fdf.translate);
+	// render_grid(&map, img, fdf.scale, fdf.translate);
+	render_iso(&map, img, fdf.scale, fdf.translate, fdf.rotation);
 
     // Render the image to the window
     render(mlx, img);
@@ -109,7 +110,7 @@ int handle_key(int keycode, t_fdf *fdf) {
     }
 
     fdf->img = init_img(fdf->mlx, 1280, 720);
-    render_grid(fdf->map, fdf->img, fdf->scale, fdf->translate);
+    render_iso(fdf->map, fdf->img, fdf->scale, fdf->translate, fdf->rotation);
     render(fdf->mlx, fdf->img);
 
     return 0;
@@ -129,7 +130,5 @@ void exit_cleanup(t_fdf *fdf) {
     if (fdf->mlx != NULL) {
         free(fdf->mlx);
     }
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
-
-

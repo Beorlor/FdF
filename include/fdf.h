@@ -16,6 +16,10 @@
 # define WINDOW_WIDTH 1280
 # define WINDOW_HEIGHT 720
 
+#ifndef M_PI
+# define M_PI 3.14159265358979323846
+#endif
+
 typedef struct s_point {
     int x;
     int y;
@@ -54,6 +58,7 @@ typedef struct s_fdf {
     t_img *img;
     float scale;
     t_point translate;
+	t_point rotation;
 } t_fdf;
 
 // fdf
@@ -83,5 +88,12 @@ void render_grid(t_map *map, t_img *img, float scale, t_point translate);
 t_point get_point_at(t_map *map, int x, int y);
 void bresenham_draw_line(t_img *img, t_point p0, t_point p1);
 int determine_color(int height);
+
+// isometric projection
+t_point isometric_project_point(t_point point3D, float scale, t_point translate, t_point rotation);
+void render_iso(t_map *map, t_img *img, float scale, t_point translate, t_point rotation);
+t_point rotate_x(t_point p, float angle);
+t_point rotate_y(t_point p, float angle);
+t_point rotate_z(t_point p, float angle);
 
 #endif

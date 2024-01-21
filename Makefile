@@ -11,7 +11,8 @@ SRC_DIR = src/
 SRCS = fdf.c \
        parsing/parsing.c \
        minilibx_management/image.c \
-       drawing/basic_projection.c
+       drawing/basic_projection.c \
+	   drawing/isometric_projection.c \
 
 # Create object file paths in the obj directory
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))

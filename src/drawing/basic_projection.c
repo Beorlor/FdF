@@ -65,7 +65,7 @@ void bresenham_draw_line(t_img *img, t_point p0, t_point p1) {
 
     while (true) {
         // Determine color
-        if (p0.color != -1) {
+        if (p0.color != -1 && p0.color != 0) {
             color = p0.color;
         } else {
             color = determine_color((int)currentHeight);
