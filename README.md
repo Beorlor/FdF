@@ -4,4 +4,6 @@ gcc test.c -o test -L../minilibx-linux -lmlx -lXext -lX11 -I../minilibx-linux
 
 TODO :
 
-vue isometric
+color bresenham
+
+key continus pressing

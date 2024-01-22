@@ -40,10 +40,12 @@ t_img *init_img(t_mlx *mlx, int width, int height) {
     return img;
 }
 
-void put_pixel_to_img(t_img *img, int x, int y, int color) {
+void put_pixel_to_img(t_img *img, float x, float y, int color) {
+	int ix = (int)round(x);
+    int iy = (int)round(y);
     // Check if the pixel is within the window bounds
     if (x >= 0 && x < WINDOW_WIDTH && y >= 0 && y < WINDOW_HEIGHT) {
-        char *dst = img->addr + (y * img->line_length + x * (img->bpp / 8));
+        char *dst = img->addr + (iy * img->line_length + ix * (img->bpp / 8));
         *(unsigned int*)dst = color;
     }
 }

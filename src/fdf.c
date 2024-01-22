@@ -55,12 +55,12 @@ int main(int argc, char **argv) {
     return (EXIT_SUCCESS);
 }
 
-void print_point_list(t_point_list *list) {
-    while (list != NULL) {
-        printf("Point (x: %d, y: %d, z: %d, color: %d)\n", list->point.x, list->point.y, list->point.z, list->point.color);
-        list = list->next;
-    }
-}
+// void print_point_list(t_point_list *list) {
+//     while (list != NULL) {
+//         printf("Point (x: %f, y: %f, z: %f, color: %d)\n", list->point.x, list->point.y, list->point.z, list->point.color);
+//         list = list->next;
+//     }
+// }
 
 int calculate_initial_scale(int num_cols, int num_rows) {
     const int max_cols_for_default_scale = 25;
@@ -115,12 +115,12 @@ int handle_key(int keycode, t_fdf *fdf) {
     }
 
     // Rotation Handling
-    if (keycode == KEY_Y) fdf->rotation.x += 90;
-    if (keycode == KEY_H) fdf->rotation.x -= 90;
-    if (keycode == KEY_U) fdf->rotation.y += 90;
-    if (keycode == KEY_J) fdf->rotation.y -= 90;
-    if (keycode == KEY_I) fdf->rotation.z += 90;
-    if (keycode == KEY_K) fdf->rotation.z -= 90;
+    if (keycode == KEY_Y) fdf->rotation.x += 1;
+    if (keycode == KEY_H) fdf->rotation.x -= 1;
+    if (keycode == KEY_U) fdf->rotation.y += 1;
+    if (keycode == KEY_J) fdf->rotation.y -= 1;
+    if (keycode == KEY_I) fdf->rotation.z += 1;
+    if (keycode == KEY_K) fdf->rotation.z -= 1;
 
     // Redraw the image
     if (fdf->img != NULL) {

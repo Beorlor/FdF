@@ -21,12 +21,11 @@
 #endif
 
 typedef struct s_point {
-    int x;
-    int y;
-    int z;
+    float x;
+    float y;
+    float z;
     int color; // Color information
 } t_point;
-
 
 typedef struct  s_point_list {
     t_point         point;
@@ -80,13 +79,13 @@ bool is_valid_integer(const char *str);
 // image
 t_mlx   *init_mlx(int width, int height, char *title);
 t_img *init_img(t_mlx *mlx, int width, int height);
-void put_pixel_to_img(t_img *img, int x, int y, int color);
+void put_pixel_to_img(t_img *img, float x, float y, int color);
 void render(t_mlx *mlx, t_img *img);
 
 // basic_projection
 t_point orthogonal_project_point(t_point point3D, float scale, t_point translate);
 void render_grid(t_map *map, t_img *img, float scale, t_point translate);
-t_point get_point_at(t_map *map, int x, int y);
+t_point get_point_at(t_map *map, float x, float y);
 void bresenham_draw_line(t_img *img, t_point p0, t_point p1);
 int determine_color(int height);
 

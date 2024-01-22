@@ -77,9 +77,9 @@ void add_point_to_list(t_point_list **list, int x, int y, int z, int color)
     new_node = (t_point_list *)malloc(sizeof(t_point_list));
     if (!new_node)
         return ;
-    new_node->point.x = x;
-    new_node->point.y = y;
-    new_node->point.z = z;
+    new_node->point.x = (float)x;
+    new_node->point.y = (float)y;
+    new_node->point.z = (float)z;
 	new_node->point.color = color;
     new_node->next = NULL;
 

@@ -32,7 +32,7 @@ void render_grid(t_map *map, t_img *img, float scale, t_point translate) {
     }
 }
 
-t_point get_point_at(t_map *map, int x, int y) {
+t_point get_point_at(t_map *map, float x, float y) {
     t_point_list *current = map->points;
     int index = y * map->num_cols + x;
 
@@ -44,46 +44,31 @@ t_point get_point_at(t_map *map, int x, int y) {
 }
 
 // Helper functions to find minimum and maximum of two integers
-int min(int a, int b) {
+float min(float a, float b) {
     return (a < b) ? a : b;
 }
 
-int max(int a, int b) {
+float max(float a, float b) {
     return (a > b) ? a : b;
 }
 
 void bresenham_draw_line(t_img *img, t_point p0, t_point p1) {
-    int dx = abs(p1.x - p0.x), sx = p0.x < p1.x ? 1 : -1;
-    int dy = -abs(p1.y - p0.y), sy = p0.y < p1.y ? 1 : -1;
+    int x0 = (int)round(p0.x);
+    int y0 = (int)round(p0.y);
+    int x1 = (int)round(p1.x);
+    int y1 = (int)round(p1.y);
+
+    int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
     int err = dx + dy, e2;
 
-    float totalDistance = sqrt(dx * dx + dy * dy); // Calculate total distance
-    float heightDiff = p1.z - p0.z;
-    float heightStep = heightDiff / totalDistance; // Adjust height step for total distance
-    float currentHeight = p0.z;
-    int color;
-
     while (true) {
-        // Determine color
-        if (p0.color != -1 && p0.color != 0) {
-            color = p0.color;
-        } else {
-            color = determine_color((int)currentHeight);
-        }
-        put_pixel_to_img(img, p0.x, p0.y, color);
+        put_pixel_to_img(img, (float)x0, (float)y0, determine_color((int)p0.z));
 
-        if (p0.x == p1.x && p0.y == p1.y) break;
+        if (x0 == x1 && y0 == y1) break;
         e2 = 2 * err;
-        if (e2 >= dy) {
-            err += dy;
-            p0.x += sx;
-            currentHeight += heightStep; // Increment height on x-axis movement
-        }
-        if (e2 <= dx) {
-            err += dx;
-            p0.y += sy;
-            currentHeight += heightStep; // Increment height on y-axis movement
-        }
+        if (e2 >= dy) { err += dy; x0 += sx; }
+        if (e2 <= dx) { err += dx; y0 += sy; }
     }
 }
 

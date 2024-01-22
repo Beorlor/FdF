@@ -30,7 +30,7 @@ t_point rotate_z(t_point p, float angle) {
 // Main isometric projection function
 t_point isometric_project_point(t_point point3D, float scale, t_point translate, t_point rotation)
 {
-	int temp_z = point3D.z;
+	float temp_z = point3D.z;
 
 	// Convert rotation angles from degrees to radians
     float rad_x = rotation.x * M_PI / 180.0;
@@ -51,7 +51,7 @@ t_point isometric_project_point(t_point point3D, float scale, t_point translate,
     point3D.x += translate.x;
     point3D.y += translate.y;
     point3D.z += translate.z;
-
+	
     // Project the point isometrically
     t_point point2D;
     point2D.x = (point3D.x - point3D.y) * cos(0.523599); // 30 degrees in radians
