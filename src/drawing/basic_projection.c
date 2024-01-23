@@ -62,33 +62,46 @@ void bresenham_draw_line(t_img *img, t_point p0, t_point p1) {
     int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
     int err = dx + dy, e2;
 
+    float totalDistance = sqrt(dx * dx + dy * dy);
+    float heightDiff = p1.z - p0.z;
+    float heightStep = heightDiff / totalDistance;
+    float currentHeight = p0.z;
+
     while (true) {
-        put_pixel_to_img(img, (float)x0, (float)y0, determine_color((int)p0.z));
+        int color;
+        if (p0.color != -1 && p0.color != 0) {
+            color = p0.color;
+        } else {
+            color = determine_color((int)currentHeight);
+        }
+        put_pixel_to_img(img, (float)x0, (float)y0, color);
 
         if (x0 == x1 && y0 == y1) break;
         e2 = 2 * err;
-        if (e2 >= dy) { err += dy; x0 += sx; }
-        if (e2 <= dx) { err += dx; y0 += sy; }
+        if (e2 >= dy) { err += dy; x0 += sx; currentHeight += heightStep; }
+        if (e2 <= dx) { err += dx; y0 += sy; currentHeight += heightStep; }
     }
 }
 
-int determine_color(int height) {
-    // Example: Simple color calculation based on height
-    // Modify this logic as per your requirement
+
+int determine_color(int height)
+{
 	if (height < 0)
 		height *= -1;
-    int normalizedHeight = height % 11;
-    switch (normalizedHeight) {
-        case 1: return 0x0000FF; // Blue
-        case 2: return 0x1E90FF; // Dodger Blue
-        case 3: return 0x00FFFF; // Cyan
-        case 4: return 0x00FA9A; // Medium Spring Green
-        case 5: return 0x32CD32; // Lime Green
-        case 6: return 0xFFFF00; // Yellow
-        case 7: return 0xFFD700; // Gold
-        case 8: return 0xFFA500; // Orange
-        case 9: return 0xFF4500; // Orange Red
-        case 10: return 0xFF0000; // Red
-        default: return 0xFFFFFF; // Default to blue for any unexpected value
-    }
+
+	int normalizedHeight = height;
+    //int normalizedHeight = height % 11;
+
+    if (normalizedHeight > 0 && normalizedHeight <= 1) return 0x0000FF; // Blue
+    else if (normalizedHeight <= 2) return 0x1E90FF; // Dodger Blue
+    else if (normalizedHeight <= 3) return 0x00FFFF; // Cyan
+    else if (normalizedHeight <= 4) return 0x00FA9A; // Medium Spring Green
+    else if (normalizedHeight <= 5) return 0x32CD32; // Lime Green
+    else if (normalizedHeight <= 6) return 0xFFFF00; // Yellow
+    else if (normalizedHeight <= 7) return 0xFFD700; // Gold
+    else if (normalizedHeight <= 8) return 0xFFA500; // Orange
+    else if (normalizedHeight <= 9) return 0xFF4500; // Orange Red
+    else if (normalizedHeight > 9) return 0xFF0000; // Red
+    else return 0xFFFFFF; // Default to blue for any unexpected value
 }
+
