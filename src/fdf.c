@@ -42,6 +42,7 @@ int main(int argc, char **argv) {
     render(mlx, img);
 
 	mlx_key_hook(mlx->win_ptr, handle_key, &fdf);
+	mlx_hook(fdf.mlx->win_ptr, 17, 0, exit_cleanup, &fdf);
 
     // Start the MiniLibX loop
     mlx_loop(mlx->mlx_ptr);
@@ -143,7 +144,8 @@ int handle_key(int keycode, t_fdf *fdf) {
 }
 
 
-void exit_cleanup(t_fdf *fdf) {
+int exit_cleanup(void *param) {
+    t_fdf *fdf = (t_fdf *)param;
     if (fdf->map != NULL) {
         free_point_list(&(fdf->map->points));
     }
