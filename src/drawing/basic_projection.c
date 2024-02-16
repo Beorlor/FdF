@@ -83,7 +83,6 @@ void bresenham_draw_line(t_img *img, t_point p0, t_point p1) {
     }
 }
 
-
 int determine_color(int height)
 {
 	if (height < 0)
