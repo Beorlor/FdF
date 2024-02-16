@@ -17,7 +17,6 @@ int	main(int argc, char **argv)
 	{
 		return (EXIT_FAILURE);
 	}
-	// print_point_list(map.points);
 	// Initialize MiniLibX
 	mlx = init_mlx(1280, 720, "FdF");
 	if (!mlx)
@@ -51,14 +50,6 @@ int	main(int argc, char **argv)
 	free(mlx);
 	return (EXIT_SUCCESS);
 }
-
-// void print_point_list(t_point_list *list) {
-//     while (list != NULL) {
-//         printf("Point (x: %f, y: %f, z: %f, color: %d)\n", list->point.x,
-//	list->point.y, list->point.z, list->point.color);
-//         list = list->next;
-//     }
-// }
 
 int	calculate_initial_scale(int num_cols, int num_rows)
 {
