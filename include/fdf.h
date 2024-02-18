@@ -16,6 +16,18 @@
 # define WINDOW_WIDTH 1280
 # define WINDOW_HEIGHT 720
 
+# define BLUE 0x0000FF
+# define DOGER_BLUE 0x1E90FF
+# define CYAN 0x00FFFF
+# define GREEN 0x00FA9A
+# define LIME_GREEN 0x32CD32
+# define YELLOW 0xFFFF00
+# define GOLD 0xFFD700
+# define ORANGE 0xFFA500
+# define ORANGE_RED 0xFF4500
+# define RED 0xFF0000
+# define BLANK 0xFFFFFF
+
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
