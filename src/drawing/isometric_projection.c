@@ -8,6 +8,7 @@ t_point	rotate_x(t_point p, float angle)
 	rotated.x = p.x;
 	rotated.y = p.y * cos(angle) - p.z * sin(angle);
 	rotated.z = p.y * sin(angle) + p.z * cos(angle);
+	rotated.color = p.color;
 	return (rotated);
 }
 
@@ -19,6 +20,7 @@ t_point	rotate_y(t_point p, float angle)
 	rotated.x = p.x * cos(angle) + p.z * sin(angle);
 	rotated.y = p.y;
 	rotated.z = -p.x * sin(angle) + p.z * cos(angle);
+	rotated.color = p.color;
 	return (rotated);
 }
 
@@ -30,6 +32,7 @@ t_point	rotate_z(t_point p, float angle)
 	rotated.x = p.x * cos(angle) - p.y * sin(angle);
 	rotated.y = p.x * sin(angle) + p.y * cos(angle);
 	rotated.z = p.z;
+	rotated.color = p.color;
 	return (rotated);
 }
 
