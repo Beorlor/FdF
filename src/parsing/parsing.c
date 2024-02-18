@@ -12,60 +12,67 @@ void	free_point_list(t_point_list **list)
 	}
 }
 
-bool	parse_file(char *filename, t_map *map)
-{
-	int		fd;
-	char	*line;
-	char	**tokens;
-	int		y;
-	int		color;
-	char	**point_data;
+static void free_tokens(char **tokens) {
+    if (tokens == NULL) {
+        return; // Guard against null pointer.
+    }
 
-	y = 0;
-	int x, z;
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-	{
-		ft_putendl_fd("File not found", 2);
-		return (false);
-	}
-	map->num_rows = 0;
-	map->num_cols = -1;
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		if (!is_line_valid(line))
-		{
-			ft_putendl_fd("Invalid line format in file.", 2);
-			free(line);
-			free_point_list(&map->points);
-			close(fd);
-			return (false);
-		}
-		tokens = ft_split(line, ' ');
-		x = 0;
-		while (tokens[x] != NULL)
-		{
-			point_data = ft_split(tokens[x], ',');
-			z = ft_atoi(point_data[0]);
-			color = (point_data[1] != NULL) ? strtol(point_data[1], NULL, 16) : -1;
-			add_point_to_list(&map->points, x, y, z, color);
-			for (int j = 0; point_data[j] != NULL; j++)
-			{
-				free(point_data[j]);
-			}
-			free(point_data);
-			free(tokens[x]);
-			x++;
-		}
-		if (map->num_cols == -1)
-			map->num_cols = x;
-		free(tokens);
-		free(line);
-		y++;
-	}
-	map->num_rows = y;
-	close(fd);
-	return (true);
+    for (int i = 0; tokens[i] != NULL; i++) {
+        free(tokens[i]); // Free each string in the array.
+    }
+    free(tokens); // Free the array itself.
+}
+
+bool parse_file(char *filename, t_map *map) {
+    int fd, y = 0, num_cols = -1;
+    char *line;
+    fd = open(filename, O_RDONLY);
+    if (fd < 0) {
+        ft_putendl_fd("File not found", 2);
+        return false;
+    }
+    map->num_rows = 0;
+    while ((line = get_next_line(fd)) != NULL) {
+        char **tokens = ft_split(line, ' ');
+        if (!tokens) {  // If splitting failed, cleanup and exit.
+            free(line);
+            close(fd);
+            free_point_list(&map->points);
+            return false;
+        }
+        int x = 0;
+        while (tokens[x] != NULL) {
+            char **point_data = ft_split(tokens[x], ',');
+            if (!point_data) {  // If splitting failed, cleanup and exit.
+                free(line);
+                free_tokens(tokens);  // Make sure to implement this function.
+                close(fd);
+                free_point_list(&map->points);
+                return false;
+            }
+            int z = ft_atoi(point_data[0]);
+            int color = point_data[1] ? strtol(point_data[1], NULL, 16) : -1;
+            add_point_to_list(&map->points, x, y, z, color);
+            free_tokens(point_data);  // Make sure to implement this function.
+            x++;
+        }
+        if (num_cols == -1) num_cols = x;
+        else if (num_cols != x) {
+            ft_putendl_fd("Error: Inconsistent number of columns.", 2);
+            free(line);
+            free_tokens(tokens);  // Clean up the tokens.
+            close(fd);
+            free_point_list(&map->points);
+            return false;
+        }
+        free_tokens(tokens);  // Clean up the tokens after processing the line.
+        free(line);
+        y++;
+    }
+    map->num_rows = y;
+    map->num_cols = num_cols;
+    close(fd);
+    return true;
 }
 
 void	add_point_to_list(t_point_list **list, int x, int y, int z, int color)
