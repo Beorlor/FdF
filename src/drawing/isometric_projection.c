@@ -69,48 +69,46 @@ t_point	isometric_project_point(t_point point3D, float scale, t_point translate,
 	return (point2D);
 }
 
-static void	render_iso_lines(t_map *map, t_img *img, float scale,
-		t_point translate, t_point rotation, int x, int y)
+// Use 'next' variable for both
+// 'right' and 'bottom' points to reduce variable count
+static void	render_iso_lines(t_fdf *fdf, int x, int y)
 {
 	t_point	current;
-	t_point	projected_current;
-	t_point	right;
-	t_point	projected_right;
-	t_point	bottom;
-	t_point	projected_bottom;
+	t_point	projected;
+	t_point	next;
 
-	current = get_point_at(map, x, y);
-	projected_current = isometric_project_point(current, scale, translate,
-			rotation);
-	if (x < map->num_cols - 1)
+	current = get_point_at(fdf->map, x, y);
+	projected = isometric_project_point(current, fdf->scale, fdf->translate,
+			fdf->rotation);
+	if (x < fdf->map->num_cols - 1)
 	{
-		right = get_point_at(map, x + 1, y);
-		projected_right = isometric_project_point(right, scale, translate,
-				rotation);
-		bresenham_draw_line(img, projected_current, projected_right);
+		next = get_point_at(fdf->map, x + 1, y);
+		next = isometric_project_point(next, fdf->scale, fdf->translate,
+				fdf->rotation);
+		bresenham_draw_line(fdf->img, projected, next);
 	}
-	if (y < map->num_rows - 1)
+	if (y < fdf->map->num_rows - 1)
 	{
-		bottom = get_point_at(map, x, y + 1);
-		projected_bottom = isometric_project_point(bottom, scale, translate,
-				rotation);
-		bresenham_draw_line(img, projected_current, projected_bottom);
+		next = get_point_at(fdf->map, x, y + 1);
+		next = isometric_project_point(next, fdf->scale, fdf->translate,
+				fdf->rotation);
+		bresenham_draw_line(fdf->img, projected, next);
 	}
 }
 
-void	render_iso(t_map *map, t_img *img, float scale, t_point translate,
-		t_point rotation)
+// Updated render_iso to pass t_fdf struct
+void	render_iso(t_fdf *fdf)
 {
 	int	y;
 	int	x;
 
 	y = 0;
-	while (y < map->num_rows)
+	while (y < fdf->map->num_rows)
 	{
 		x = 0;
-		while (x < map->num_cols)
+		while (x < fdf->map->num_cols)
 		{
-			render_iso_lines(map, img, scale, translate, rotation, x, y);
+			render_iso_lines(fdf, x, y);
 			x++;
 		}
 		y++;

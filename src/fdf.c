@@ -36,7 +36,7 @@ int	main(int argc, char **argv)
 	initial_scale = calculate_initial_scale(map.num_cols, map.num_rows);
 	t_fdf fdf = {&map, mlx, img, initial_scale, {500, 150, 0, 0}, {0, 0, 0, 0}, true};
 	// Render the grid
-	render_iso(&map, img, fdf.scale, fdf.translate, fdf.rotation);
+	render_iso(&fdf);
 	// Render the image to the window
 	render(mlx, img);
 	mlx_key_hook(mlx->win_ptr, handle_key, &fdf);
@@ -142,8 +142,7 @@ int	handle_key(int keycode, t_fdf *fdf)
 	// Render based on current projection mode
 	if (fdf->is_isometric)
 	{
-		render_iso(fdf->map, fdf->img, fdf->scale, fdf->translate,
-			fdf->rotation);
+		render_iso(fdf);
 	}
 	else
 	{

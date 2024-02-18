@@ -91,7 +91,7 @@ int determine_color(int height);
 
 // isometric projection
 t_point isometric_project_point(t_point point3D, float scale, t_point translate, t_point rotation);
-void render_iso(t_map *map, t_img *img, float scale, t_point translate, t_point rotation);
+void render_iso(t_fdf *fdf);
 t_point rotate_x(t_point p, float angle);
 t_point rotate_y(t_point p, float angle);
 t_point rotate_z(t_point p, float angle);
