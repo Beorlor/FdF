@@ -12,10 +12,8 @@ t_point	orthogonal_project_point(t_point point3D, float scale,
 	return (point2D);
 }
 
-void	render_grid(t_map *map, t_img *img, float scale, t_point translate)
+static void	draw_line_conditions(t_map *map, t_img *img, float scale, t_point translate, int x, int y)
 {
-	int		y;
-	int		x;
 	t_point	current;
 	t_point	projected_current;
 	t_point	right;
@@ -23,29 +21,34 @@ void	render_grid(t_map *map, t_img *img, float scale, t_point translate)
 	t_point	bottom;
 	t_point	projected_bottom;
 
+	current = get_point_at(map, x, y);
+	projected_current = orthogonal_project_point(current, scale, translate);
+	if (x < map->num_cols - 1)
+	{
+		right = get_point_at(map, x + 1, y);
+		projected_right = orthogonal_project_point(right, scale, translate);
+		bresenham_draw_line(img, projected_current, projected_right);
+	}
+	if (y < map->num_rows - 1)
+	{
+		bottom = get_point_at(map, x, y + 1);
+		projected_bottom = orthogonal_project_point(bottom, scale, translate);
+		bresenham_draw_line(img, projected_current, projected_bottom);
+	}
+}
+
+void	render_grid(t_map *map, t_img *img, float scale, t_point translate)
+{
+	int		y;
+	int		x;
+
 	y = 0;
 	while (y < map->num_rows)
 	{
 		x = 0;
 		while (x < map->num_cols)
 		{
-			current = get_point_at(map, x, y);
-			projected_current = orthogonal_project_point(current, scale,
-					translate);
-			if (x < map->num_cols - 1)
-			{
-				right = get_point_at(map, x + 1, y);
-				projected_right = orthogonal_project_point(right, scale,
-						translate);
-				bresenham_draw_line(img, projected_current, projected_right);
-			}
-			if (y < map->num_rows - 1)
-			{
-				bottom = get_point_at(map, x, y + 1);
-				projected_bottom = orthogonal_project_point(bottom, scale,
-						translate);
-				bresenham_draw_line(img, projected_current, projected_bottom);
-			}
+			draw_line_conditions(map, img, scale, translate, x, y);
 			x++;
 		}
 		y++;
