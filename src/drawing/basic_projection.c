@@ -12,7 +12,8 @@ t_point	orthogonal_project_point(t_point point3D, float scale,
 	return (point2D);
 }
 
-static void	draw_line_conditions(t_map *map, t_img *img, float scale, t_point translate, int x, int y)
+static void	draw_line_conditions(t_map *map, t_img *img, float scale,
+		t_point translate, int x, int y)
 {
 	t_point	current;
 	t_point	projected_current;
@@ -39,8 +40,8 @@ static void	draw_line_conditions(t_map *map, t_img *img, float scale, t_point tr
 
 void	render_grid(t_map *map, t_img *img, float scale, t_point translate)
 {
-	int		y;
-	int		x;
+	int	y;
+	int	x;
 
 	y = 0;
 	while (y < map->num_rows)
@@ -80,64 +81,74 @@ float	max(float a, float b)
 	return ((a > b) ? a : b);
 }
 
-void	bresenham_draw_line(t_img *img, t_point p0, t_point p1)
+static void	init_line_drawing(t_draw *draw, t_point p0, t_point p1)
 {
-	int		x0;
-	int		y0;
-	int		x1;
-	int		y1;
-	int		dx;
-	int		dy;
-	int		err;
-	float	totalDistance;
-	float	heightDiff;
-	float	heightStep;
-	float	currentHeight;
-	int color;
-	int e2;
-	int sx;
-	int sy;
+	draw->startx = (int)round(p0.x);
+	draw->starty = (int)round(p0.y);
+	draw->endx = (int)round(p1.x);
+	draw->endy = (int)round(p1.y);
+	draw->deltax = abs(draw->endx - draw->startx);
+	draw->deltay = -abs(draw->endy - draw->starty);
+	draw->stepx = draw->startx < draw->endx ? 1 : -1;
+	draw->stepy = draw->starty < draw->endy ? 1 : -1;
+	draw->error = draw->deltax + draw->deltay;
+	draw->line_length = sqrt(draw->deltax * draw->deltax + draw->deltay * draw->deltay);
+	draw->height_diff = p1.z - p0.z;
+	draw->height_step = draw->height_diff / draw->line_length;
+	draw->current_height = p0.z;
+}
 
-	x0 = (int)round(p0.x);
-	y0 = (int)round(p0.y);
-	x1 = (int)round(p1.x);
-	y1 = (int)round(p1.y);
-	dx = abs(x1 - x0);
-	dy = -abs(y1 - y0);
-	sx = x0 < x1 ? 1 : -1;
-	sy = y0 < y1 ? 1 : -1;
-	err = dx + dy;
-	totalDistance = sqrt(dx * dx + dy * dy);
-	heightDiff = p1.z - p0.z;
-	heightStep = heightDiff / totalDistance;
-	currentHeight = p0.z;
+static int	get_line_color(t_point p0, float current_height)
+{
+	if (p0.color != -1 && p0.color != 0)
+	{
+		return (p0.color);
+	}
+	else
+	{
+		return (determine_color((int)current_height));
+	}
+}
+
+static void	update_line_drawing(t_draw *draw)
+{
+	int	e2;
+
+	e2 = 2 * draw->error;
+	if (e2 >= draw->deltay)
+	{
+		draw->error += draw->deltay;
+		draw->startx += draw->stepx;
+		draw->current_height += draw->height_step;
+	}
+	if (e2 <= draw->deltax)
+	{
+		draw->error += draw->deltax;
+		draw->starty += draw->stepy;
+		draw->current_height += draw->height_step;
+	}
+}
+
+static void	draw_line_loop(t_img *img, t_draw *draw, t_point p0)
+{
+	int	color;
+
 	while (true)
 	{
-		if (p0.color != -1 && p0.color != 0)
-		{
-			color = p0.color;
-		}
-		else
-		{
-			color = determine_color((int)currentHeight);
-		}
-		put_pixel_to_img(img, (float)x0, (float)y0, color);
-		if (x0 == x1 && y0 == y1)
+		color = get_line_color(p0, draw->current_height);
+		put_pixel_to_img(img, (float)draw->startx, (float)draw->starty, color);
+		if (draw->startx == draw->endx && draw->starty == draw->endy)
 			break ;
-		e2 = 2 * err;
-		if (e2 >= dy)
-		{
-			err += dy;
-			x0 += sx;
-			currentHeight += heightStep;
-		}
-		if (e2 <= dx)
-		{
-			err += dx;
-			y0 += sy;
-			currentHeight += heightStep;
-		}
+		update_line_drawing(draw);
 	}
+}
+
+void	bresenham_draw_line(t_img *img, t_point p0, t_point p1)
+{
+	t_draw	draw;
+
+	init_line_drawing(&draw, p0, p1); // Initialize line drawing parameters
+	draw_line_loop(img, &draw, p0);   // Main drawing loop
 }
 
 int	determine_color(int height)

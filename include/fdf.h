@@ -73,6 +73,24 @@ typedef struct s_fdf {
 	bool is_isometric;
 } t_fdf;
 
+// struct for brasenham algo to be complient with 42 norm
+typedef struct s_draw
+{
+	int	startx;
+	int	starty;
+	int	endx;
+	int	endy;
+	int	deltax;
+	int	deltay;
+	int	stepx;
+	int	stepy;
+	int	error;
+	float	line_length;
+	float	height_diff;
+	float	height_step;
+	float	current_height;
+}			t_draw;
+
 // fdf
 void print_point_list(t_point_list *list);
 int calculate_initial_scale(int num_cols, int num_rows);
