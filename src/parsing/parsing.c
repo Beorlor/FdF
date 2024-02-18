@@ -72,15 +72,20 @@ static bool	validate_num_cols(int *num_cols, int x)
 
 static bool	add_point(char **point_data, t_map *map, int x, int y)
 {
-	int	z;
-	int	color;
+	t_point	new_point;
+	int		z;
+	int		color;
 
 	z = ft_atoi(point_data[0]);
 	if (point_data[1])
 		color = strtol(point_data[1], NULL, 16);
 	else
 		color = -1;
-	add_point_to_list(&map->points, x, y, z, color);
+	new_point.x = x;
+	new_point.y = y;
+	new_point.z = z;
+	new_point.color = color;
+	add_point_to_list(&map->points, new_point);
 	return (true);
 }
 
@@ -148,7 +153,7 @@ bool	parse_file(char *filename, t_map *map)
 	return (true);
 }
 
-void	add_point_to_list(t_point_list **list, int x, int y, int z, int color)
+void	add_point_to_list(t_point_list **list, t_point point)
 {
 	t_point_list	*new_node;
 	t_point_list	*temp;
@@ -156,20 +161,22 @@ void	add_point_to_list(t_point_list **list, int x, int y, int z, int color)
 	new_node = (t_point_list *)malloc(sizeof(t_point_list));
 	if (!new_node)
 		return ;
-	new_node->point.x = x;
-	new_node->point.y = y;
-	new_node->point.z = z;
-	new_node->point.color = color;
+	new_node->point.x = point.x;
+	new_node->point.y = point.y;
+	new_node->point.z = point.z;
+	new_node->point.color = point.color;
 	new_node->next = NULL;
 	if (!*list)
 	{
 		*list = new_node;
-		return ;
 	}
-	temp = *list;
-	while (temp->next != NULL)
-		temp = temp->next;
-	temp->next = new_node;
+	else
+	{
+		temp = *list;
+		while (temp->next != NULL)
+			temp = temp->next;
+		temp->next = new_node;
+	}
 }
 
 static bool	is_hex_digit(char c)

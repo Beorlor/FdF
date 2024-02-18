@@ -100,7 +100,7 @@ int exit_cleanup(void *param);
 // parsing
 void free_point_list(t_point_list **list);
 bool parse_file(char *filename, t_map *map);
-void add_point_to_list(t_point_list **list, int x, int y, int z, int color);
+void add_point_to_list(t_point_list **list, t_point point);
 bool is_line_valid(const char *line);
 bool is_valid_hex_color(const char *str);
 int ft_isxdigit(int c);
