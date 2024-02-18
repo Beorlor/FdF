@@ -42,6 +42,7 @@ int	main(int argc, char **argv)
 	return (EXIT_SUCCESS);
 }
 
+// Choose the smaller scale factor to ensure the entire map fits within the window
 int	calculate_initial_scale(int num_cols, int num_rows)
 {
 	const int	max_cols_for_default_scale = 25;
@@ -55,12 +56,12 @@ int	calculate_initial_scale(int num_cols, int num_rows)
 			* 100) / num_cols : 100;
 	scale_factor_row = (num_rows > max_rows_for_default_scale) ? (max_rows_for_default_scale
 			* 100) / num_rows : 100;
-	// Choose the smaller scale factor to ensure the entire map fits within the window
 	scale_factor = (scale_factor_col < scale_factor_row) ? scale_factor_col : scale_factor_row;
 	return ((default_scale * scale_factor) / 100);
 }
 
 // Key handling function
+//make 119 be define in the header to be KEY_W and make int KEY_W become move_up
 int	handle_key(int keycode, t_fdf *fdf)
 {
 	const int KEY_W = 119;     // Move up
