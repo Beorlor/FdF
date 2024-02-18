@@ -146,7 +146,7 @@ int	handle_key(int keycode, t_fdf *fdf)
 	}
 	else
 	{
-		render_grid(fdf->map, fdf->img, fdf->scale, fdf->translate);
+		render_grid(fdf);
 			// Orthogonal projection
 	}
 	render(fdf->mlx, fdf->img);

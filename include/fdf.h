@@ -114,7 +114,7 @@ void render(t_mlx *mlx, t_img *img);
 
 // basic_projection
 t_point orthogonal_project_point(t_point point3d, float scale, t_point translate);
-void render_grid(t_map *map, t_img *img, float scale, t_point translate);
+void render_grid(t_fdf *fdf);
 t_point get_point_at(t_map *map, float x, float y);
 void bresenham_draw_line(t_img *img, t_point p0, t_point p1);
 int determine_color(int height);

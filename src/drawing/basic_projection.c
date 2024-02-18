@@ -12,44 +12,40 @@ t_point	orthogonal_project_point(t_point point3d, float scale,
 	return (point2d);
 }
 
-static void	draw_line_conditions(t_map *map, t_img *img, float scale,
-		t_point translate, int x, int y)
+static void	draw_line_conditions(t_fdf *fdf, int x, int y)
 {
 	t_point	current;
-	t_point	projected_current;
-	t_point	right;
-	t_point	projected_right;
-	t_point	bottom;
-	t_point	projected_bottom;
+	t_point	projected;
+	t_point	next;
 
-	current = get_point_at(map, x, y);
-	projected_current = orthogonal_project_point(current, scale, translate);
-	if (x < map->num_cols - 1)
+	current = get_point_at(fdf->map, x, y);
+	projected = orthogonal_project_point(current, fdf->scale, fdf->translate);
+	if (x < fdf->map->num_cols - 1)
 	{
-		right = get_point_at(map, x + 1, y);
-		projected_right = orthogonal_project_point(right, scale, translate);
-		bresenham_draw_line(img, projected_current, projected_right);
+		next = get_point_at(fdf->map, x + 1, y);
+		next = orthogonal_project_point(next, fdf->scale, fdf->translate);
+		bresenham_draw_line(fdf->img, projected, next);
 	}
-	if (y < map->num_rows - 1)
+	if (y < fdf->map->num_rows - 1)
 	{
-		bottom = get_point_at(map, x, y + 1);
-		projected_bottom = orthogonal_project_point(bottom, scale, translate);
-		bresenham_draw_line(img, projected_current, projected_bottom);
+		next = get_point_at(fdf->map, x, y + 1);
+		next = orthogonal_project_point(next, fdf->scale, fdf->translate);
+		bresenham_draw_line(fdf->img, projected, next);
 	}
 }
 
-void	render_grid(t_map *map, t_img *img, float scale, t_point translate)
+void	render_grid(t_fdf *fdf)
 {
 	int	y;
 	int	x;
 
 	y = 0;
-	while (y < map->num_rows)
+	while (y < fdf->map->num_rows)
 	{
 		x = 0;
-		while (x < map->num_cols)
+		while (x < fdf->map->num_cols)
 		{
-			draw_line_conditions(map, img, scale, translate, x, y);
+			draw_line_conditions(fdf, x, y);
 			x++;
 		}
 		y++;
@@ -60,25 +56,37 @@ t_point	get_point_at(t_map *map, float x, float y)
 {
 	t_point_list	*current;
 	int				index;
+	int				i;
 
+	i = 0;
 	current = map->points;
 	index = y * map->num_cols + x;
-	for (int i = 0; i < index && current != NULL; i++)
+	while (i < index && current != NULL)
 	{
 		current = current->next;
+		i++;
 	}
-	return (current ? current->point : (t_point){0, 0, 0, 0});
+	if (current != NULL)
+		return (current->point);
+	else
+		return ((t_point){0, 0, 0, 0});
 }
 
 // Helper functions to find minimum and maximum of two integers
 float	min(float a, float b)
 {
-	return ((a < b) ? a : b);
+	if (a < b)
+		return (a);
+	else
+		return (b);
 }
 
 float	max(float a, float b)
 {
-	return ((a > b) ? a : b);
+	if (a > b)
+		return (a);
+	else
+		return (b);
 }
 
 static void	init_line_drawing(t_draw *draw, t_point p0, t_point p1)
@@ -89,10 +97,15 @@ static void	init_line_drawing(t_draw *draw, t_point p0, t_point p1)
 	draw->endy = (int)round(p1.y);
 	draw->deltax = abs(draw->endx - draw->startx);
 	draw->deltay = -abs(draw->endy - draw->starty);
-	draw->stepx = draw->startx < draw->endx ? 1 : -1;
-	draw->stepy = draw->starty < draw->endy ? 1 : -1;
+	draw->stepx = -1;
+	if (draw->startx < draw->endx)
+		draw->stepx = 1;
+	draw->stepy = -1;
+	if (draw->starty < draw->endy)
+		draw->stepy = 1;
 	draw->error = draw->deltax + draw->deltay;
-	draw->line_length = sqrt(draw->deltax * draw->deltax + draw->deltay * draw->deltay);
+	draw->line_length = sqrt(draw->deltax * draw->deltax + draw->deltay
+			* draw->deltay);
 	draw->height_diff = p1.z - p0.z;
 	draw->height_step = draw->height_diff / draw->line_length;
 	draw->current_height = p0.z;
@@ -147,8 +160,8 @@ void	bresenham_draw_line(t_img *img, t_point p0, t_point p1)
 {
 	t_draw	draw;
 
-	init_line_drawing(&draw, p0, p1); // Initialize line drawing parameters
-	draw_line_loop(img, &draw, p0);   // Main drawing loop
+	init_line_drawing(&draw, p0, p1);
+	draw_line_loop(img, &draw, p0);
 }
 
 int	determine_color(int height)
