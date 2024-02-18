@@ -14,18 +14,13 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	if (!parse_file(argv[1], &map))
-	{
 		return (EXIT_FAILURE);
-	}
-	// Initialize MiniLibX
 	mlx = init_mlx(1280, 720, "FdF");
 	if (!mlx)
 	{
-		// Free the point list before exiting
 		free_point_list(&map.points);
 		return (EXIT_FAILURE);
 	}
-	// Initialize the image
 	img = init_img(mlx, 1280, 720);
 	if (!img)
 	{
@@ -35,15 +30,11 @@ int	main(int argc, char **argv)
 	}
 	initial_scale = calculate_initial_scale(map.num_cols, map.num_rows);
 	t_fdf fdf = {&map, mlx, img, initial_scale, {500, 150, 0, 0}, {0, 0, 0, 0}, true};
-	// Render the grid
 	render_iso(&fdf);
-	// Render the image to the window
 	render(mlx, img);
 	mlx_key_hook(mlx->win_ptr, handle_key, &fdf);
 	mlx_hook(fdf.mlx->win_ptr, 17, 0, exit_cleanup, &fdf);
-	// Start the MiniLibX loop
 	mlx_loop(mlx->mlx_ptr);
-	// Clean up
 	free_point_list(&map.points);
 	mlx_destroy_image(mlx->mlx_ptr, img->img_ptr);
 	free(img);
