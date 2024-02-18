@@ -4,6 +4,6 @@ gcc test.c -o test -L../minilibx-linux -lmlx -lXext -lX11 -I../minilibx-linux
 
 TODO :
 
-color bresenham
+norm parsing / fdf.c / fdf.h
 
-key continus pressing
+mettre fonctions dans le bon ordre et faire un header propre
