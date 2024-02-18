@@ -43,33 +43,33 @@ t_point	rotate_z(t_point p, float angle)
 // Translate the point
 // Project the point isometrically
 // Copy color data
-t_point	isometric_project_point(t_point point3D, float scale, t_point translate,
+t_point	isometric_project_point(t_point point3d, float scale, t_point translate,
 		t_point rotation)
 {
 	float	temp_z;
 	float	rad_x;
 	float	rad_y;
 	float	rad_z;
-	t_point	point2D;
+	t_point	point2d;
 
-	temp_z = point3D.z;
+	temp_z = point3d.z;
 	rad_x = rotation.x * M_PI / 180.0;
 	rad_y = rotation.y * M_PI / 180.0;
 	rad_z = rotation.z * M_PI / 180.0;
-	point3D = rotate_x(point3D, rad_x);
-	point3D = rotate_y(point3D, rad_y);
-	point3D = rotate_z(point3D, rad_z);
-	point3D.x *= scale;
-	point3D.y *= scale;
-	point3D.z *= scale;
-	point3D.x += translate.x;
-	point3D.y += translate.y;
-	point3D.z += translate.z;
-	point2D.x = (point3D.x - point3D.y) * cos(0.523599);
-	point2D.y = (point3D.x + point3D.y) * sin(0.523599) - point3D.z;
-	point2D.color = point3D.color;
-	point2D.z = temp_z;
-	return (point2D);
+	point3d = rotate_x(point3d, rad_x);
+	point3d = rotate_y(point3d, rad_y);
+	point3d = rotate_z(point3d, rad_z);
+	point3d.x *= scale;
+	point3d.y *= scale;
+	point3d.z *= scale;
+	point3d.x += translate.x;
+	point3d.y += translate.y;
+	point3d.z += translate.z;
+	point2d.x = (point3d.x - point3d.y) * cos(0.523599);
+	point2d.y = (point3d.x + point3d.y) * sin(0.523599) - point3d.z;
+	point2d.color = point3d.color;
+	point2d.z = temp_z;
+	return (point2d);
 }
 
 // Use 'next' variable for both

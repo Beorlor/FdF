@@ -113,14 +113,14 @@ void put_pixel_to_img(t_img *img, float x, float y, int color);
 void render(t_mlx *mlx, t_img *img);
 
 // basic_projection
-t_point orthogonal_project_point(t_point point3D, float scale, t_point translate);
+t_point orthogonal_project_point(t_point point3d, float scale, t_point translate);
 void render_grid(t_map *map, t_img *img, float scale, t_point translate);
 t_point get_point_at(t_map *map, float x, float y);
 void bresenham_draw_line(t_img *img, t_point p0, t_point p1);
 int determine_color(int height);
 
 // isometric projection
-t_point isometric_project_point(t_point point3D, float scale, t_point translate, t_point rotation);
+t_point isometric_project_point(t_point point3d, float scale, t_point translate, t_point rotation);
 void render_iso(t_fdf *fdf);
 t_point rotate_x(t_point p, float angle);
 t_point rotate_y(t_point p, float angle);

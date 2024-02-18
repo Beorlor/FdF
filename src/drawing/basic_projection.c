@@ -1,15 +1,15 @@
 #include "../../include/fdf.h"
 
-t_point	orthogonal_project_point(t_point point3D, float scale,
+t_point	orthogonal_project_point(t_point point3d, float scale,
 		t_point translate)
 {
-	t_point	point2D;
+	t_point	point2d;
 
-	point2D.x = point3D.x * scale + translate.x;
-	point2D.y = point3D.y * scale + translate.y;
-	point2D.z = point3D.z;
-	point2D.color = point3D.color;
-	return (point2D);
+	point2d.x = point3d.x * scale + translate.x;
+	point2d.y = point3d.y * scale + translate.y;
+	point2d.z = point3d.z;
+	point2d.color = point3d.color;
+	return (point2d);
 }
 
 static void	draw_line_conditions(t_map *map, t_img *img, float scale,
