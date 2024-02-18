@@ -1,5 +1,11 @@
 #include "../../include/fdf.h"
 
+static void	free_single_point_list(t_point_list **list)
+{
+	free(*list);
+	*list = NULL;
+}
+
 void	free_point_list(t_point_list **list)
 {
 	t_point_list	*temp;
@@ -7,72 +13,139 @@ void	free_point_list(t_point_list **list)
 	while (*list)
 	{
 		temp = (*list)->next;
-		free(*list);
+		free_single_point_list(list);
 		*list = temp;
 	}
 }
 
-static void free_tokens(char **tokens) {
-    if (tokens == NULL) {
-        return; // Guard against null pointer.
-    }
-
-    for (int i = 0; tokens[i] != NULL; i++) {
-        free(tokens[i]); // Free each string in the array.
-    }
-    free(tokens); // Free the array itself.
+static void	free_token(char **token)
+{
+	free(*token);
+	*token = NULL;
 }
 
-bool parse_file(char *filename, t_map *map) {
-    int fd, y = 0, num_cols = -1;
-    char *line;
-    fd = open(filename, O_RDONLY);
-    if (fd < 0) {
-        ft_putendl_fd("File not found", 2);
-        return false;
-    }
-    map->num_rows = 0;
-    while ((line = get_next_line(fd)) != NULL) {
-        char **tokens = ft_split(line, ' ');
-        if (!tokens) {  // If splitting failed, cleanup and exit.
-            free(line);
-            close(fd);
-            free_point_list(&map->points);
-            return false;
-        }
-        int x = 0;
-        while (tokens[x] != NULL) {
-            char **point_data = ft_split(tokens[x], ',');
-            if (!point_data) {  // If splitting failed, cleanup and exit.
-                free(line);
-                free_tokens(tokens);  // Make sure to implement this function.
-                close(fd);
-                free_point_list(&map->points);
-                return false;
-            }
-            int z = ft_atoi(point_data[0]);
-            int color = point_data[1] ? strtol(point_data[1], NULL, 16) : -1;
-            add_point_to_list(&map->points, x, y, z, color);
-            free_tokens(point_data);  // Make sure to implement this function.
-            x++;
-        }
-        if (num_cols == -1) num_cols = x;
-        else if (num_cols != x) {
-            ft_putendl_fd("Error: Inconsistent number of columns.", 2);
-            free(line);
-            free_tokens(tokens);  // Clean up the tokens.
-            close(fd);
-            free_point_list(&map->points);
-            return false;
-        }
-        free_tokens(tokens);  // Clean up the tokens after processing the line.
-        free(line);
-        y++;
-    }
-    map->num_rows = y;
-    map->num_cols = num_cols;
-    close(fd);
-    return true;
+static void	free_tokens(char **tokens)
+{
+	int	i;
+
+	i = 0;
+	while (tokens[i] != NULL)
+	{
+		free_token(&tokens[i]);
+		i++;
+	}
+	free(tokens);
+}
+
+static int	open_file(char *filename)
+{
+	int	fd;
+
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		ft_putendl_fd("File not found", 2);
+	return (fd);
+}
+
+static bool	check_file_descriptor(int fd)
+{
+	return (fd >= 0);
+}
+
+static void	init_map(t_map *map)
+{
+	map->num_rows = 0;
+	map->num_cols = -1;
+}
+
+static bool	validate_num_cols(int *num_cols, int x)
+{
+	if (*num_cols == -1)
+		*num_cols = x;
+	else if (*num_cols != x)
+	{
+		ft_putendl_fd("Error: Inconsistent number of columns.", 2);
+		return (false);
+	}
+	return (true);
+}
+
+static bool	add_point(char **point_data, t_map *map, int x, int y)
+{
+	int	z;
+	int	color;
+
+	z = ft_atoi(point_data[0]);
+	if (point_data[1])
+		color = strtol(point_data[1], NULL, 16);
+	else
+		color = -1;
+	add_point_to_list(&map->points, x, y, z, color);
+	return (true);
+}
+
+static bool	process_tokens(char **tokens, t_map *map, int y, int *num_cols)
+{
+	int		x;
+	char	**point_data;
+
+	x = 0;
+	while (tokens[x] != NULL)
+	{
+		point_data = ft_split(tokens[x], ',');
+		if (!point_data)
+			return (false);
+		if (!add_point(point_data, map, x, y))
+			return (false);
+		free_tokens(point_data);
+		x++;
+	}
+	return (validate_num_cols(num_cols, x));
+}
+
+static bool	read_and_process_line(int fd, t_map *map, int *y, int *num_cols)
+{
+	char	*line;
+	char	**tokens;
+	bool	success;
+
+	line = get_next_line(fd);
+	while (line != NULL)
+	{
+		tokens = ft_split(line, ' ');
+		if (!tokens)
+			return (false);
+		success = process_tokens(tokens, map, *y, num_cols);
+		free_tokens(tokens);
+		free(line);
+		if (!success)
+			return (false);
+		(*y)++;
+		line = get_next_line(fd);
+	}
+	return (true);
+}
+
+bool	parse_file(char *filename, t_map *map)
+{
+	int		fd;
+	int		y;
+	bool	success;
+
+	y = 0;
+	fd = open_file(filename);
+	if (!check_file_descriptor(fd))
+		return (false);
+	init_map(map);
+	success = read_and_process_line(fd, map, &y, &map->num_cols);
+	close(fd);
+	if (!success)
+	{
+		free_point_list(&map->points);
+		return (false);
+	}
+	map->num_rows = y;
+	return (true);
 }
 
 void	add_point_to_list(t_point_list **list, int x, int y, int z, int color)
@@ -83,9 +156,9 @@ void	add_point_to_list(t_point_list **list, int x, int y, int z, int color)
 	new_node = (t_point_list *)malloc(sizeof(t_point_list));
 	if (!new_node)
 		return ;
-	new_node->point.x = (float)x;
-	new_node->point.y = (float)y;
-	new_node->point.z = (float)z;
+	new_node->point.x = x;
+	new_node->point.y = y;
+	new_node->point.z = z;
 	new_node->point.color = color;
 	new_node->next = NULL;
 	if (!*list)
@@ -94,103 +167,72 @@ void	add_point_to_list(t_point_list **list, int x, int y, int z, int color)
 		return ;
 	}
 	temp = *list;
-	while (temp->next)
+	while (temp->next != NULL)
 		temp = temp->next;
 	temp->next = new_node;
 }
 
-bool	is_line_valid(const char *line)
+static bool	is_hex_digit(char c)
 {
-	char	*mutableLine;
-	size_t	len;
-	char	**tokens;
-	bool	valid;
-	char	**point_tokens;
-
-	mutableLine = ft_strdup(line);
-	if (!mutableLine)
-		return (false);
-	len = ft_strlen(mutableLine);
-	if (len > 0 && mutableLine[len - 1] == '\n')
-	{
-		mutableLine[len - 1] = '\0';
-	}
-	tokens = ft_split(mutableLine, ' ');
-	free(mutableLine);
-	if (tokens == NULL)
-		return (false);
-	valid = true;
-	for (int i = 0; tokens[i] != NULL; i++)
-	{
-		point_tokens = ft_split(tokens[i], ',');
-		if (!point_tokens || !point_tokens[0]
-			|| !is_valid_integer(point_tokens[0]))
-		{
-			valid = false;
-		}
-		else if (point_tokens[1] && !is_valid_hex_color(point_tokens[1]))
-		{
-			valid = false;
-		}
-		for (int j = 0; point_tokens && point_tokens[j] != NULL; j++)
-		{
-			free(point_tokens[j]);
-		}
-		free(point_tokens);
-		if (!valid)
-			break ;
-	}
-	for (int j = 0; tokens[j] != NULL; j++)
-	{
-		free(tokens[j]);
-	}
-	free(tokens);
-	return (valid);
+	return ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a'
+			&& c <= 'f'));
 }
 
 bool	is_valid_hex_color(const char *str)
 {
-	if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
-	{
-		str += 2;
-	}
-	else
-	{
+	if (str[0] != '0' || (str[1] != 'x' && str[1] != 'X')
+		|| ft_strlen(str) != 8)
 		return (false);
-	}
-	if (ft_strlen(str) != 6)
-		return (false);
+	str += 2;
 	while (*str)
 	{
-		if (!ft_isxdigit(*str))
+		if (!is_hex_digit(*str))
 			return (false);
 		str++;
 	}
 	return (true);
 }
 
-int	ft_isxdigit(int c)
-{
-	if (c >= '0' && c <= '9')
-		return (1);
-	if ((c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
-		return (1);
-	return (0);
-}
-
-// Function to check if a string is a valid integer,
-// considering newline characters
 bool	is_valid_integer(const char *str)
 {
 	if (*str == '-' || *str == '+')
 		str++;
 	if (*str == '\0')
 		return (false);
-	while (*str != '\0' && *str != '\n')
+	while (*str)
 	{
 		if (!ft_isdigit(*str))
 			return (false);
 		str++;
 	}
 	return (true);
+}
+
+bool	is_line_valid(const char *line)
+{
+	char	*mutable_line;
+	char	**tokens;
+	bool	valid;
+	int		i;
+	char	**point_tokens;
+
+	valid = true;
+	i = -1;
+	mutable_line = ft_strdup(line);
+	if (!mutable_line)
+		return (false);
+	tokens = ft_split(mutable_line, ' ');
+	free(mutable_line);
+	if (!tokens)
+		return (false);
+	while (valid && tokens[++i])
+	{
+		point_tokens = ft_split(tokens[i], ',');
+		valid = point_tokens && point_tokens[0]
+			&& is_valid_integer(point_tokens[0]) && (!point_tokens[1]
+				|| is_valid_hex_color(point_tokens[1]));
+		free_tokens(point_tokens);
+	}
+	free_tokens(tokens);
+	return (valid);
 }
