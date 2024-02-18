@@ -1,7 +1,7 @@
 NAME = fdf
 
 CC = gcc
-CFLAGS = -Werror -Wall -Wextra -fsanitize=address
+CFLAGS = -Werror -Wall -Wextra -fsanitize=address -fsanitize=leak
 RM = rm -rf
 
 OBJ_DIR = obj/
