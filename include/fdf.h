@@ -116,8 +116,8 @@ typedef struct s_draw
 // fdf
 // void print_point_list(t_point_list *list);
 int calculate_initial_scale(int num_cols, int num_rows);
-// int handle_key(int keycode, t_fdf *fdf);
-// int exit_cleanup(void *param);
+int handle_key(int keycode, t_fdf *fdf);
+int exit_cleanup(void *param);
 
 // parsing
 void free_point_list(t_point_list **list);
