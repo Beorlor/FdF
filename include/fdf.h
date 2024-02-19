@@ -28,6 +28,28 @@
 # define RED 0xFF0000
 # define BLANK 0xFFFFFF
 
+// Key definitions for movement
+# define KEY_W 119       // Move up
+# define KEY_A 97        // Move left
+# define KEY_S 115       // Move down
+# define KEY_D 100       // Move right
+
+// Key definitions for scaling
+# define KEY_Q 113       // Scale down
+# define KEY_E 101       // Scale up
+
+// Key definition for exit
+# define KEY_ESC 65307   // Exit
+
+// Key definitions for projection mode and rotation
+# define KEY_O 111       // Toggle Projection Mode
+# define KEY_Y 121       // Rotate +X
+# define KEY_H 104       // Rotate -X
+# define KEY_U 117       // Rotate +Y
+# define KEY_J 106       // Rotate -Y
+# define KEY_I 105       // Rotate +Z
+# define KEY_K 107       // Rotate -Z
+
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
@@ -92,10 +114,10 @@ typedef struct s_draw
 }			t_draw;
 
 // fdf
-void print_point_list(t_point_list *list);
+// void print_point_list(t_point_list *list);
 int calculate_initial_scale(int num_cols, int num_rows);
-int handle_key(int keycode, t_fdf *fdf);
-int exit_cleanup(void *param);
+// int handle_key(int keycode, t_fdf *fdf);
+// int exit_cleanup(void *param);
 
 // parsing
 void free_point_list(t_point_list **list);
