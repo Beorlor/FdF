@@ -6,7 +6,7 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 01:58:15 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 22:11:11 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 23:55:57 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	cleanup(t_fdf *fdf)
 	}
 	if (fdf->mlx)
 	{
-		if (fdf->mlx->win_ptr)
-			mlx_destroy_window(fdf->mlx->mlx_ptr, fdf->mlx->win_ptr);
+		mlx_destroy_display(fdf->mlx->mlx_ptr);
+		free(fdf->mlx->mlx_ptr);
 		free(fdf->mlx);
 	}
 }
@@ -50,6 +50,8 @@ int	exit_cleanup(void *param)
 	}
 	if (fdf->mlx != NULL)
 	{
+		mlx_destroy_display(fdf->mlx->mlx_ptr);
+		free(fdf->mlx->mlx_ptr);
 		free(fdf->mlx);
 	}
 	exit(EXIT_SUCCESS);
