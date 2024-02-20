@@ -6,7 +6,7 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 01:45:36 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 02:58:04 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:15:40 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool	parse_file(char *filename, t_map *map)
 	fd = open_file(filename);
 	if (!check_file_descriptor(fd))
 		return (false);
-	init_map(map);
+	map_value(map);
 	success = read_and_process_line(fd, map, &y, &map->num_cols);
 	close(fd);
 	if (!success)
@@ -34,7 +34,7 @@ bool	parse_file(char *filename, t_map *map)
 	return (true);
 }
 
-void	init_map(t_map *map)
+void	map_value(t_map *map)
 {
 	map->num_rows = 0;
 	map->num_cols = -1;
@@ -60,6 +60,25 @@ bool	read_and_process_line(int fd, t_map *map, int *y, int *num_cols)
 		(*y)++;
 		line = get_next_line(fd);
 	}
+	return (true);
+}
+
+bool	add_point(char **point_data, t_map *map, int x, int y)
+{
+	t_point	new_point;
+	int		z;
+	int		color;
+
+	z = ft_atoi(point_data[0]);
+	if (point_data[1])
+		color = strtol(point_data[1], NULL, 16);
+	else
+		color = -1;
+	new_point.x = x;
+	new_point.y = y;
+	new_point.z = z;
+	new_point.color = color;
+	add_point_to_list(&map->points, new_point);
 	return (true);
 }
 

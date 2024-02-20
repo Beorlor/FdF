@@ -6,7 +6,7 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 01:45:39 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 01:45:40 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:08:07 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,25 +36,6 @@ bool	validate_num_cols(int *num_cols, int x)
 		ft_putendl_fd("Error: Inconsistent number of columns.", 2);
 		return (false);
 	}
-	return (true);
-}
-
-bool	add_point(char **point_data, t_map *map, int x, int y)
-{
-	t_point	new_point;
-	int		z;
-	int		color;
-
-	z = ft_atoi(point_data[0]);
-	if (point_data[1])
-		color = strtol(point_data[1], NULL, 16);
-	else
-		color = -1;
-	new_point.x = x;
-	new_point.y = y;
-	new_point.z = z;
-	new_point.color = color;
-	add_point_to_list(&map->points, new_point);
 	return (true);
 }
 

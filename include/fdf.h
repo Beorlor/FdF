@@ -6,7 +6,7 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 03:04:14 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 03:04:40 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:15:53 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef struct s_point
 	float				x;
 	float				y;
 	float				z;
-	int					color; // Color information
+	int					color;
 }						t_point;
 
 typedef struct s_point_list
@@ -137,10 +137,10 @@ typedef struct s_draw
 
 // main.c
 int						main(int argc, char **argv);
+void					init_map(t_map *map);
 void					init_fdf(t_fdf *fdf, t_map *map, t_mlx *mlx,
 							t_img *img);
 void					render_setup(t_fdf *fdf);
-void					cleanup(t_fdf *fdf);
 void					setup_hooks(t_mlx *mlx, t_fdf *fdf);
 
 // brasenham.c
@@ -191,16 +191,16 @@ void					free_point_list(t_point_list **list);
 
 // parsing.c
 bool					parse_file(char *filename, t_map *map);
-void					init_map(t_map *map);
+void					map_value(t_map *map);
 bool					read_and_process_line(int fd, t_map *map, int *y,
 							int *num_cols);
+bool					add_point(char **point_data, t_map *map, int x, int y);
 void					add_point_to_list(t_point_list **list, t_point point);
 
 // parsing_utils.c
 int						open_file(char *filename);
 bool					check_file_descriptor(int fd);
 bool					validate_num_cols(int *num_cols, int x);
-bool					add_point(char **point_data, t_map *map, int x, int y);
 bool					process_tokens(char **tokens, t_map *map, int y,
 							int *num_cols);
 
@@ -211,6 +211,7 @@ bool					is_valid_integer(const char *str);
 bool					is_line_valid(const char *line);
 
 // exit.c
+void					cleanup(t_fdf *fdf);
 int						exit_cleanup(void *param);
 int						ft_error(char *message);
 

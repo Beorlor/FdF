@@ -6,7 +6,7 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 02:03:18 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 02:23:56 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:15:24 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 		return (ft_error("Usage: ./fdf filename"));
+	init_map(&map);
 	if (!parse_file(argv[1], &map))
 		return (EXIT_FAILURE);
 	mlx = init_mlx(1280, 720, "FdF");
@@ -34,6 +35,16 @@ int	main(int argc, char **argv)
 	setup_hooks(mlx, &fdf);
 	cleanup(&fdf);
 	return (EXIT_SUCCESS);
+}
+
+void init_map(t_map *map)
+{
+	if (!map)
+		return;
+
+	map->points = NULL;
+	map->num_rows = 0;
+	map->num_cols = 0;
 }
 
 void	init_fdf(t_fdf *fdf, t_map *map, t_mlx *mlx, t_img *img)
@@ -58,23 +69,6 @@ void	render_setup(t_fdf *fdf)
 	else
 		render_grid(fdf);
 	render(fdf->mlx, fdf->img);
-}
-
-void	cleanup(t_fdf *fdf)
-{
-	if (fdf->map)
-		free_point_list(&fdf->map->points);
-	if (fdf->img)
-	{
-		mlx_destroy_image(fdf->mlx->mlx_ptr, fdf->img->img_ptr);
-		free(fdf->img);
-	}
-	if (fdf->mlx)
-	{
-		if (fdf->mlx->win_ptr)
-			mlx_destroy_window(fdf->mlx->mlx_ptr, fdf->mlx->win_ptr);
-		free(fdf->mlx);
-	}
 }
 
 void	setup_hooks(t_mlx *mlx, t_fdf *fdf)

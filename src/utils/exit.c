@@ -6,12 +6,29 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 01:58:15 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 02:51:15 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:11:11 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../../include/fdf.h"
+
+void	cleanup(t_fdf *fdf)
+{
+	if (fdf->map)
+		free_point_list(&fdf->map->points);
+	if (fdf->img)
+	{
+		mlx_destroy_image(fdf->mlx->mlx_ptr, fdf->img->img_ptr);
+		free(fdf->img);
+	}
+	if (fdf->mlx)
+	{
+		if (fdf->mlx->win_ptr)
+			mlx_destroy_window(fdf->mlx->mlx_ptr, fdf->mlx->win_ptr);
+		free(fdf->mlx);
+	}
+}
 
 int	exit_cleanup(void *param)
 {
