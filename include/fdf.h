@@ -117,39 +117,83 @@ typedef struct s_draw
 	float	current_height;
 }			t_draw;
 
-// fdf
-// void print_point_list(t_point_list *list);
-int calculate_initial_scale(int num_cols, int num_rows);
-int handle_key(int keycode, t_fdf *fdf);
-int exit_cleanup(void *param);
+// main.c
+int	main(int argc, char **argv);
+void	init_fdf(t_fdf *fdf, t_map *map, t_mlx *mlx, t_img *img);
+void	render_setup(t_fdf *fdf);
+void	cleanup(t_fdf *fdf);
+void	setup_hooks(t_mlx *mlx, t_fdf *fdf);
 
-// parsing
-void free_point_list(t_point_list **list);
-bool parse_file(char *filename, t_map *map);
-void add_point_to_list(t_point_list **list, t_point point);
-bool is_line_valid(const char *line);
-bool is_valid_hex_color(const char *str);
-int ft_isxdigit(int c);
-bool is_valid_integer(const char *str);
+// brasenham.c
+void	bresenham_draw_line(t_img *img, t_point p0, t_point p1);
+void	init_line_drawing(t_draw *draw, t_point p0, t_point p1);
+void	draw_line_loop(t_img *img, t_draw *draw, t_point p0);
+int	get_line_color(t_point p0, float current_height);
+void	update_line_drawing(t_draw *draw);
 
-// image
-t_mlx   *init_mlx(int width, int height, char *title);
-t_img *init_img(t_mlx *mlx, int width, int height);
-void put_pixel_to_img(t_img *img, float x, float y, int color);
-void render(t_mlx *mlx, t_img *img);
+// drawing_utilities.c
+void	put_pixel_to_img(t_img *img, float x, float y, int color);
+t_point	get_point_at(t_map *map, float x, float y);
+int	determine_color(int height);
 
-// basic_projection
-t_point orthogonal_project_point(t_point point3d, float scale, t_point translate);
-void render_grid(t_fdf *fdf);
-t_point get_point_at(t_map *map, float x, float y);
-void bresenham_draw_line(t_img *img, t_point p0, t_point p1);
-int determine_color(int height);
+// isometric_projection.c
+t_point	rotate_x(t_point p, float angle);
+t_point	rotate_y(t_point p, float angle);
+t_point	rotate_z(t_point p, float angle);
+void	render_iso_lines(t_fdf *fdf, int x, int y);
 
-// isometric projection
-t_point isometric_project_point(t_point point3d, float scale, t_point translate, t_point rotation);
-void render_iso(t_fdf *fdf);
-t_point rotate_x(t_point p, float angle);
-t_point rotate_y(t_point p, float angle);
-t_point rotate_z(t_point p, float angle);
+// projections_and_rendering.c
+t_point	orthogonal_project_point(t_point point3d, float scale, t_point translate);
+t_point	isometric_project_point(t_point point3d, float scale, t_point translate, t_point rotation);
+void	render_grid(t_fdf *fdf);
+void	render_iso(t_fdf *fdf);
+void	draw_line_conditions(t_fdf *fdf, int x, int y);
 
+// key_handling.c
+int	handle_key(int keycode, t_fdf *fdf);
+void	handle_movement(int keycode, t_fdf *fdf);
+void	handle_scale(int keycode, t_fdf *fdf);
+void	handle_rotation(int keycode, t_fdf *fdf);
+void	handle_projection_mode(int keycode, t_fdf *fdf);
+
+// mlx_management.c
+t_mlx	*init_mlx(int width, int height, char *title);
+t_img	*init_img(t_mlx *mlx, int width, int height);
+void	render(t_mlx *mlx, t_img *img);
+
+// free_parsing.c
+void	free_token(char **token);
+void	free_tokens(char **tokens);
+void	free_single_point_list(t_point_list **list);
+void	free_point_list(t_point_list **list);
+
+// parsing.c
+bool	parse_file(char *filename, t_map *map);
+void	init_map(t_map *map);
+bool	read_and_process_line(int fd, t_map *map, int *y, int *num_cols);
+void	add_point_to_list(t_point_list **list, t_point point);
+
+// parsing_utils.c
+int	open_file(char *filename);
+bool	check_file_descriptor(int fd);
+bool	validate_num_cols(int *num_cols, int x);
+bool	add_point(char **point_data, t_map *map, int x, int y);
+bool	process_tokens(char **tokens, t_map *map, int y, int *num_cols);
+
+// validation.c
+bool	is_hex_digit(char c);
+bool	is_valid_hex_color(const char *str);
+bool	is_valid_integer(const char *str);
+bool	is_line_valid(const char *line);
+
+// exit.c
+int	exit_cleanup(void *param);
+int	ft_error(char *message);
+
+// utils.c
+float	min(float a, float b);
+float	max(float a, float b);
+int	calculate_scale_factor(int size, int max_size);
+int	calculate_initial_scale(int num_cols, int num_rows);
+void	reinit_image(t_fdf *fdf);
 #endif
