@@ -6,7 +6,7 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 02:03:18 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 22:15:24 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 23:57:54 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,10 @@ int	main(int argc, char **argv)
 	return (EXIT_SUCCESS);
 }
 
-void init_map(t_map *map)
+void	init_map(t_map *map)
 {
 	if (!map)
-		return;
-
+		return ;
 	map->points = NULL;
 	map->num_rows = 0;
 	map->num_cols = 0;

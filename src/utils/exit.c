@@ -6,10 +6,9 @@
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 01:58:15 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/20 23:55:57 by jedurand         ###   ########.fr       */
+/*   Updated: 2024/02/20 23:57:00 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../../include/fdf.h"
 
