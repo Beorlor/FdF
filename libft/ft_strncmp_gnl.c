@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jedurand <jedurand@student.42perpignan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 01:23:30 by jedurand          #+#    #+#             */
-/*   Updated: 2024/02/21 01:24:08 by jedurand         ###   ########.fr       */
+/*   Created: 2024/02/21 01:39:10 by jedurand          #+#    #+#             */
+/*   Updated: 2024/02/21 01:39:56 by jedurand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 
 int	ft_strncmp_gnl(const char *s1, const char *s2, size_t n)
 {
-	size_t	i;
+	size_t		i;
 
 	i = 0;
 	while (i < n && s1[i] && s2[i] && s1[i] == s2[i])
